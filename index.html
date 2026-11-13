@@ -6,135 +6,127 @@
 <title>ממני אליך - מחולל נימות אישיות</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700;900&family=Assistant:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Varela+Round&family=Assistant:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --paper:#fbfcfe; --grid:#e4ebf4; --graphite:#23272f; --soft:#5d6675; --faint:#97a0ad;
-    --ink:#1f3fa6; --ink-deep:#16307f; --red:#d2302b;
-    --hl-yellow:#ffe45c; --hl-pink:#ffb3c7; --hl-green:#9ee6b0; --hl-lilac:#d6c4ff; --hl-orange:#ffc98a; --hl-blue:#b9dcff;
-    --serif:'Frank Ruhl Libre', 'David', serif;
-    --sans:'Assistant', 'Segoe UI', Arial, sans-serif;
+    --bg:#fff7f2; --card:#ffffff; --ink:#3a2a33; --soft:#7b6670; --faint:#b9a7ae; --line:#f0dfd8;
+    --berry:#9b2f52; --berry-deep:#7a2140; --blush:#fde4e4;
+    --c-sun:#fde7a6; --c-sun-ink:#7a5300;
+    --c-apricot:#ffdcc2; --c-apricot-ink:#8a3f12;
+    --c-sky:#d9ecfb; --c-sky-ink:#1d5a86;
+    --c-rose:#fbd3dc; --c-rose-ink:#8b2343;
+    --c-lav:#e8defb; --c-lav-ink:#55309a;
+    --c-sage:#d6eedb; --c-sage-ink:#25643a;
+    --head:'Varela Round', 'Assistant', sans-serif;
+    --body:'Assistant', 'Segoe UI', Arial, sans-serif;
   }
   *{box-sizing:border-box}
   @media (prefers-reduced-motion: reduce){ *{transition:none !important} }
-  body{
-    margin:0; color:var(--graphite); font-family:var(--sans); font-size:17px; line-height:1.5;
-    background-color:var(--paper);
-    background-image:linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-    background-size:24px 24px;
-  }
+  body{margin:0; color:var(--ink); font-family:var(--body); font-size:17px; line-height:1.55;
+    background:radial-gradient(1200px 600px at 85% -10%, #ffe6dc 0%, transparent 60%), radial-gradient(900px 500px at 0% 0%, #fff1d9 0%, transparent 55%), var(--bg); background-attachment:fixed}
   button, input, select, textarea{font:inherit; color:inherit}
-  :focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+  :focus-visible{outline:3px solid var(--berry); outline-offset:2px}
 
-  .masthead{max-width:1240px; margin:0 auto; padding:28px 20px 8px; display:flex; align-items:flex-end; justify-content:space-between; gap:16px; flex-wrap:wrap}
-  .masthead h1{font-family:var(--serif); font-weight:900; font-size:clamp(2.6rem, 6vw, 4.2rem); line-height:.95; margin:0; color:var(--ink-deep); letter-spacing:-.01em}
-  .masthead p{margin:6px 0 0; color:var(--soft); font-size:1.02rem}
+  .masthead{max-width:1220px; margin:0 auto; padding:30px 20px 10px; display:flex; align-items:flex-end; justify-content:space-between; gap:16px; flex-wrap:wrap}
+  .masthead h1{font-family:var(--head); font-weight:400; font-size:clamp(2.4rem, 5.5vw, 3.6rem); line-height:1; margin:0; color:var(--berry)}
+  .masthead h1 .heart{display:inline-block; color:#f08a8a; font-size:.6em; vertical-align:middle; margin-inline-start:.25em}
+  .masthead p{margin:8px 0 0; color:var(--soft); font-size:1.05rem}
 
-  .toggle{display:inline-flex; background:#fff; border:1.5px solid var(--graphite); border-radius:999px; padding:3px}
-  .toggle button{border:0; background:none; padding:7px 15px; border-radius:999px; cursor:pointer; font-weight:600; font-size:.95rem}
-  .toggle button.on{background:var(--graphite); color:#fff}
+  .toggle{display:inline-flex; background:#fff; border-radius:999px; padding:4px; box-shadow:0 1px 0 var(--line), 0 6px 18px -10px rgba(155,47,82,.35)}
+  .toggle button{border:0; background:none; padding:8px 16px; border-radius:999px; cursor:pointer; font-weight:600; font-size:.95rem; color:var(--soft)}
+  .toggle button.on{background:var(--berry); color:#fff}
 
-  .layout{max-width:1240px; margin:0 auto; padding:12px 20px 40px; display:grid; grid-template-columns:minmax(0,1.25fr) minmax(0,1fr); gap:28px; align-items:start}
+  .layout{max-width:1220px; margin:0 auto; padding:12px 20px 40px; display:grid; grid-template-columns:minmax(0,1.2fr) minmax(0,1fr); gap:26px; align-items:start}
   .controls{min-width:0}
   .sheet-col{position:sticky; top:16px; min-width:0}
-  @media (max-width: 900px){
-    .layout{grid-template-columns:1fr; gap:18px; padding-bottom:100px}
-    .sheet-col{position:static}
-  }
+  @media (max-width: 900px){ .layout{grid-template-columns:1fr; gap:18px; padding-bottom:100px} .sheet-col{position:static} }
 
-  .who{background:#fff; border:1.5px solid var(--graphite); border-radius:14px; padding:14px; display:grid; grid-template-columns:1fr auto; gap:10px; align-items:center; box-shadow:4px 4px 0 var(--graphite)}
-  .who input{border:0; border-bottom:2px solid var(--grid); padding:6px 2px; font-family:var(--serif); font-size:1.5rem; font-weight:700; background:transparent; width:100%; color:var(--ink-deep)}
-  .who input::placeholder{color:#b9c1cc; font-weight:500}
-  .who input:focus{outline:none; border-bottom-color:var(--ink)}
+  .who{background:var(--card); border-radius:22px; padding:16px 18px; display:grid; grid-template-columns:1fr auto; gap:12px; align-items:center; box-shadow:0 10px 30px -18px rgba(122,33,64,.35)}
+  .who input{border:0; border-bottom:2px solid var(--line); padding:6px 2px; font-family:var(--head); font-size:1.45rem; background:transparent; width:100%; color:var(--berry-deep)}
+  .who input::placeholder{color:#d2bfc5}
+  .who input:focus{outline:none; border-bottom-color:var(--berry)}
   .who .len{grid-column:1/-1; display:flex; align-items:center; gap:10px; flex-wrap:wrap; color:var(--soft); font-size:.92rem}
+  .who .toggle{box-shadow:none; background:var(--bg)}
   @media (max-width:520px){ .who{grid-template-columns:1fr} .who .toggle{display:flex} .who .toggle button{flex:1} .who .len{flex-direction:column; align-items:stretch; gap:4px} }
 
-  .shortcuts{margin:20px 0 4px}
-  .shortcuts h3{font-family:var(--serif); font-size:1.05rem; margin:0 0 9px; font-weight:700}
-  .shortcuts h3 span{font-family:var(--sans); font-weight:400; color:var(--soft); font-size:.88rem; margin-inline-start:8px}
-  .presets{display:flex; gap:9px; flex-wrap:wrap}
-  .preset{background:#fff6b8; border:0; border-radius:2px; padding:9px 13px 10px; cursor:pointer; font-weight:600; font-size:.92rem; box-shadow:0 1px 0 rgba(0,0,0,.06), 0 4px 7px -4px rgba(0,0,0,.3); transform:rotate(-.8deg); transition:transform .12s}
-  .preset:nth-child(even){transform:rotate(.8deg); background:#dff0ff}
-  .preset:nth-child(3n){background:#ffe3ea}
-  .preset:hover{transform:rotate(0) translateY(-2px)}
+  .shortcuts{margin:22px 0 4px}
+  .shortcuts h3{font-family:var(--head); font-weight:400; font-size:1.1rem; margin:0 0 10px; color:var(--berry-deep)}
+  .shortcuts h3 span{font-family:var(--body); color:var(--soft); font-size:.88rem; margin-inline-start:8px}
+  .presets{display:flex; gap:8px; flex-wrap:wrap}
+  .preset{background:#fff; border:1.5px solid var(--line); border-radius:999px; padding:8px 15px; cursor:pointer; font-weight:600; font-size:.93rem; color:var(--berry-deep); transition:background .12s, border-color .12s}
+  .preset:hover{background:var(--blush); border-color:#f3c2c8}
 
-  .group{margin-top:24px}
-  .group > summary{list-style:none; cursor:pointer; display:flex; align-items:baseline; gap:8px; padding-bottom:6px; border-bottom:1.5px solid var(--graphite); margin-bottom:10px}
+  .group{margin-top:14px; background:var(--card); border-radius:20px; padding:4px 16px 14px; box-shadow:0 8px 24px -20px rgba(122,33,64,.35)}
+  .group > summary{list-style:none; cursor:pointer; display:flex; align-items:center; gap:10px; padding:12px 0 10px}
   .group > summary::-webkit-details-marker{display:none}
-  .group > summary h2{font-family:var(--serif); font-size:1.35rem; font-weight:700; margin:0}
-  .group > summary .note{color:var(--soft); font-size:.88rem}
-  .group > summary .count{margin-inline-start:auto; font-weight:700; color:var(--ink); font-size:.95rem}
-  .group > summary .caret{color:var(--faint); font-size:.9rem; transition:transform .15s}
+  .group > summary::before{content:''; width:12px; height:12px; border-radius:50%; background:var(--dot, var(--c-sun)); flex:0 0 auto}
+  .group > summary h2{font-family:var(--head); font-weight:400; font-size:1.18rem; margin:0}
+  .group > summary .note{color:var(--soft); font-size:.86rem}
+  .group > summary .count{margin-inline-start:auto; font-weight:700; font-size:.85rem; background:var(--dot); color:var(--ink); border-radius:999px; padding:0 9px; line-height:1.6}
+  .group > summary .count:empty{display:none}
+  .group > summary .caret{color:var(--faint); font-size:.85rem; transition:transform .15s}
+  .group > summary .count:empty + .caret{margin-inline-start:auto}
+  .group:not([open]){padding-bottom:4px}
   .group:not([open]) > summary .caret{transform:rotate(90deg)}
 
-  /* בחירה = מרקר זוהר */
-  .marks{display:flex; flex-wrap:wrap; gap:4px 4px}
-  .mark{--hl:var(--hl-yellow); position:relative; z-index:0; border:0; background:none; cursor:pointer; padding:5px 9px; font-size:1rem; line-height:1.3; border-radius:4px}
-  .mark::before{content:''; position:absolute; inset:5px 1px 3px; border-radius:3px 8px 4px 9px; background:var(--hl); transform:scaleX(0); transform-origin:right; transition:transform .16s ease-out; z-index:-1}
-  .mark:hover{background:rgba(35,39,47,.06)}
-  .mark.on{font-weight:700}
-  .mark.on::before{transform:scaleX(1) skewX(-7deg)}
-  [data-hl="pink"] .mark{--hl:var(--hl-pink)}
-  [data-hl="green"] .mark{--hl:var(--hl-green)}
-  [data-hl="lilac"] .mark{--hl:var(--hl-lilac)}
-  [data-hl="orange"] .mark{--hl:var(--hl-orange)}
-  [data-hl="blue"] .mark{--hl:var(--hl-blue)}
+  .marks{display:flex; flex-wrap:wrap; gap:7px}
+  .mark{--bgc:var(--c-sun); --fgc:var(--c-sun-ink); border:1.5px solid var(--line); background:#fff; cursor:pointer; padding:6px 13px; font-size:.97rem; line-height:1.3; border-radius:999px; color:var(--ink); transition:background .12s, border-color .12s, color .12s}
+  .mark:hover{border-color:#e4c7c0; background:#fffaf8}
+  .mark.on{background:var(--bgc); border-color:var(--bgc); color:var(--fgc); font-weight:700}
+  .mark.on::before{content:'✓'; margin-inline-end:5px; font-weight:700}
+  [data-hl="yellow"]{--dot:var(--c-sun)}
+  [data-hl="orange"]{--dot:var(--c-apricot)} [data-hl="orange"] .mark{--bgc:var(--c-apricot); --fgc:var(--c-apricot-ink)}
+  [data-hl="blue"]{--dot:var(--c-sky)} [data-hl="blue"] .mark{--bgc:var(--c-sky); --fgc:var(--c-sky-ink)}
+  [data-hl="pink"]{--dot:var(--c-rose)} [data-hl="pink"] .mark{--bgc:var(--c-rose); --fgc:var(--c-rose-ink)}
+  [data-hl="lilac"]{--dot:var(--c-lav)} [data-hl="lilac"] .mark{--bgc:var(--c-lav); --fgc:var(--c-lav-ink)}
+  [data-hl="green"]{--dot:var(--c-sage)} [data-hl="green"] .mark{--bgc:var(--c-sage); --fgc:var(--c-sage-ink)}
+  [data-hl="plain"]{--dot:#f3d9d0}
 
-  .free{width:100%; background:#fff; border:1.5px solid #cfd6e0; border-radius:10px; padding:10px 12px}
-  .free:focus{border-color:var(--ink); outline:none}
+  .free{width:100%; background:#fff; border:1.5px solid var(--line); border-radius:14px; padding:10px 14px}
+  .free:focus{border-color:var(--berry); outline:none}
 
-  /* הדף */
-  .sheet{background:#fff; border-radius:3px; position:relative; padding:20px 16px 16px 22px; box-shadow:0 1px 0 #dfe5ee, 0 18px 40px -22px rgba(22,48,127,.45)}
-  .sheet::before{content:''; position:absolute; top:22px; height:calc(2.05rem * 13); left:6px; width:12px; background:radial-gradient(circle at 6px 10px, var(--grid) 4.5px, transparent 5.5px) 0 0/12px 56px repeat-y}
-  .sheet-head{display:flex; justify-content:space-between; align-items:baseline; gap:8px; margin:0 0 6px; padding-inline-start:32px}
-  .sheet-head b{font-family:var(--serif); font-size:1.15rem; color:var(--ink-deep)}
-  .sheet-head small{color:var(--soft)}
-  .page{
-    --lh:2.05rem;
-    display:block; width:100%; min-height:calc(var(--lh) * 13); border:0; resize:vertical; padding:4px 32px 4px 8px; margin:0;
-    font-family:var(--serif); font-size:1.13rem; line-height:var(--lh); color:#1b2a6b; background-color:#fff;
-    background-image:
-      linear-gradient(to left, transparent 22px, rgba(210,48,43,.6) 22px, rgba(210,48,43,.6) 24px, transparent 24px),
-      repeating-linear-gradient(to bottom, transparent 0, transparent calc(var(--lh) - 1px), #c9d8ee calc(var(--lh) - 1px), #c9d8ee var(--lh));
-    background-attachment:local; background-position:0 4px;
-  }
+  .sheet{background:var(--card); border-radius:26px; padding:20px 22px 18px; box-shadow:0 24px 50px -28px rgba(122,33,64,.5); border-top:6px solid #f4b6b6}
+  .sheet-head{display:flex; justify-content:space-between; align-items:baseline; gap:8px; margin:0 0 8px}
+  .sheet-head b{font-family:var(--head); font-weight:400; font-size:1.25rem; color:var(--berry)}
+  .sheet-head small{color:var(--soft); background:var(--blush); border-radius:999px; padding:2px 10px}
+  .page{display:block; width:100%; min-height:330px; border:0; resize:vertical; padding:6px 2px; margin:0; font-family:var(--body); font-size:1.12rem; line-height:1.85; color:var(--ink); background:transparent}
   .page:focus{outline:none}
-  .page::placeholder{color:#a7b1c2}
-  .meta{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; color:var(--soft); font-size:.86rem; margin:8px 0 0; padding-inline-start:32px}
-  .meta .over{color:var(--red); font-weight:700}
+  .page::placeholder{color:#c6b3b9}
+  .meta{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; color:var(--soft); font-size:.86rem; margin:8px 0 0; border-top:1px solid var(--line); padding-top:8px}
+  .meta .over{color:#c0263f; font-weight:700}
   .sheet-actions{display:grid; grid-template-columns:1.2fr 1fr 1fr; gap:8px; margin-top:12px}
-  .btn{border:1.5px solid var(--graphite); background:#fff; border-radius:10px; padding:10px 8px; cursor:pointer; font-weight:700; font-size:.97rem}
-  .btn:hover{background:#f1f4fa}
-  .btn.ink{background:var(--ink); color:#fff; border-color:var(--ink)}
-  .btn.ink:hover{background:var(--ink-deep)}
-  .btn.ghost{border-color:#cfd6e0}
-  .btn.small{padding:6px 12px; font-size:.9rem}
+  .btn{border:1.5px solid var(--line); background:#fff; border-radius:999px; padding:10px 8px; cursor:pointer; font-weight:700; font-size:.97rem; color:var(--berry-deep)}
+  .btn:hover{background:var(--blush)}
+  .btn.ink{background:var(--berry); color:#fff; border-color:var(--berry)}
+  .btn.ink:hover{background:var(--berry-deep)}
+  .btn.ghost{border-color:var(--line)}
+  .btn.small{padding:6px 14px; font-size:.9rem}
   .next-row{display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:10px}
   .next-row small{color:var(--soft)}
 
-  .drawer{margin-top:14px; background:#fff; border:1.5px solid #cfd6e0; border-radius:12px}
-  .drawer > summary{list-style:none; cursor:pointer; padding:12px 14px; font-weight:700; display:flex; gap:8px; align-items:baseline; flex-wrap:wrap}
+  .drawer{margin-top:12px; background:var(--card); border-radius:20px; box-shadow:0 8px 24px -20px rgba(122,33,64,.35)}
+  .drawer > summary{list-style:none; cursor:pointer; padding:13px 18px; font-family:var(--head); display:flex; gap:8px; align-items:baseline; flex-wrap:wrap; color:var(--berry-deep)}
   .drawer > summary::-webkit-details-marker{display:none}
-  .drawer > summary small{font-weight:400; color:var(--soft)}
-  .drawer .in{padding:0 14px 14px}
+  .drawer > summary small{font-family:var(--body); color:var(--soft)}
+  .drawer .in{padding:0 18px 16px}
   .settings{display:grid; grid-template-columns:repeat(auto-fit, minmax(170px,1fr)); gap:10px}
   .settings label{display:block; font-size:.85rem; color:var(--soft); margin-bottom:3px}
-  .settings input, .settings select, .drawer textarea{width:100%; border:1.5px solid #cfd6e0; border-radius:8px; padding:8px 10px; background:#fff}
+  .settings input, .settings select, .drawer textarea{width:100%; border:1.5px solid var(--line); border-radius:12px; padding:8px 12px; background:#fff}
 
   .roster{display:flex; flex-wrap:wrap; gap:6px; margin-top:10px}
-  .rname{border:1.5px solid #cfd6e0; background:#fff; border-radius:999px; padding:4px 12px; cursor:pointer; font-size:.93rem}
-  .rname.done{border-color:#7cc99a; background:#effaf3; color:#1f6b3d}
+  .rname{border:1.5px solid var(--line); background:#fff; border-radius:999px; padding:4px 12px; cursor:pointer; font-size:.93rem}
+  .rname.done{border-color:var(--c-sage); background:var(--c-sage); color:var(--c-sage-ink)}
   .rname.done::after{content:' ✓'}
-  .rname.cur{border-color:var(--ink); background:var(--ink); color:#fff}
+  .rname.cur{border-color:var(--berry); background:var(--berry); color:#fff}
 
-  .saved-item{border-top:1px dashed #cfd6e0; padding:10px 0}
+  .saved-item{border-top:1px solid var(--line); padding:10px 0}
   .saved-item:first-child{border-top:0}
   .saved-item .top{display:flex; justify-content:space-between; align-items:center; gap:8px}
-  .saved-item b{font-family:var(--serif); font-size:1.05rem}
+  .saved-item b{font-family:var(--head); font-weight:400; font-size:1.05rem; color:var(--berry-deep)}
   .saved-item .kind{font-size:.8rem; color:var(--soft); margin-inline-start:6px}
-  .saved-item p{margin:4px 0 0; white-space:pre-line; font-size:.93rem; color:#3a4150}
-  .link{border:0; background:none; color:var(--ink); cursor:pointer; font-weight:600; font-size:.88rem; padding:2px 4px}
-  .link.danger{color:var(--red)}
+  .saved-item p{margin:4px 0 0; white-space:pre-line; font-size:.93rem; color:#5a4850}
+  .link{border:0; background:none; color:var(--berry); cursor:pointer; font-weight:600; font-size:.88rem; padding:2px 4px}
+  .link.danger{color:#c0263f}
   .row{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:10px}
   .confirm{display:none; align-items:center; gap:8px; flex-wrap:wrap; margin-top:10px; font-size:.93rem}
   .confirm.show{display:flex}
@@ -142,12 +134,12 @@
 
   .mbar{display:none}
   @media (max-width:900px){
-    .mbar{display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; position:fixed; bottom:0; left:0; right:0; z-index:5; padding:8px 12px calc(8px + env(safe-area-inset-bottom)); background:rgba(251,252,254,.96); border-top:1.5px solid var(--graphite)}
+    .mbar{display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; position:fixed; bottom:0; left:0; right:0; z-index:5; padding:10px 12px calc(10px + env(safe-area-inset-bottom)); background:rgba(255,247,242,.96); box-shadow:0 -8px 24px -16px rgba(122,33,64,.4)}
   }
-  .toast{position:fixed; bottom:86px; left:50%; transform:translate(-50%, 8px); background:var(--graphite); color:#fff; padding:9px 18px; border-radius:999px; font-size:.93rem; opacity:0; transition:opacity .18s, transform .18s; pointer-events:none; z-index:9}
+  .toast{position:fixed; bottom:90px; left:50%; transform:translate(-50%, 8px); background:var(--berry-deep); color:#fff; padding:9px 18px; border-radius:999px; font-size:.93rem; opacity:0; transition:opacity .18s, transform .18s; pointer-events:none; z-index:9}
   .toast.show{opacity:1; transform:translate(-50%,0)}
   .hidden{display:none !important}
-  footer{max-width:1240px; margin:0 auto; padding:0 20px 110px; color:var(--faint); font-size:.82rem}
+  footer{max-width:1220px; margin:0 auto; padding:0 20px 110px; color:var(--faint); font-size:.82rem}
   footer bdi{direction:ltr}
   @media (max-width:520px){ .presets{flex-wrap:nowrap; overflow-x:auto; margin:0 -20px; padding:4px 20px 12px} .preset{flex:0 0 auto} }
 </style>
@@ -156,7 +148,7 @@
 
 <header class="masthead">
   <div>
-    <h1>ממני אליך</h1>
+    <h1>ממני אליך<span class="heart" aria-hidden="true">♥</span></h1>
     <p>נימות אישיות לתעודה וליום הורים. מסמנים, והנימה נכתבת.</p>
   </div>
   <div class="toggle" id="modeSeg" role="group" aria-label="סוג הנימה">
@@ -198,7 +190,7 @@
     <details class="group" data-sec="attendance" data-hl="orange"><summary><h2>נוכחות</h2><span class="count"></span><span class="caret">▾</span></summary><div class="marks" id="attendance"></div></details>
     <details class="group" open data-sec="goals" data-hl="green"><summary><h2>מסר לסיום</h2><span class="count"></span><span class="caret">▾</span></summary><div class="marks" id="goals"></div></details>
 
-    <details class="group" open><summary><h2>משפט משלך</h2><span class="caret">▾</span></summary>
+    <details class="group" open data-hl="plain"><summary><h2>משפט משלך</h2><span class="caret">▾</span></summary>
       <input type="text" id="custom" class="free" placeholder="יתווסף לנימה כמו שהוא">
     </details>
   </section>
@@ -214,7 +206,7 @@
         <button class="btn" id="save">שמירה</button>
       </div>
       <div class="next-row">
-        <small>אפשר לערוך את הנימה ישירות על הדף</small>
+        <small>אפשר לערוך את הנימה ישירות</small>
         <button class="btn ghost small" id="next">התלמיד הבא</button>
       </div>
     </div>
@@ -449,20 +441,20 @@ const traitsData = [
         { 
             id: 'potential', label: 'פוטנציאל לא ממומש', 
             m: [
-                'יש לך פוטנציאל רב, אך לצערי הוא אינו בא לידי ביטוי מלא בציונים. נדרשת השקעה רבה יותר.',
+                'יש לך פוטנציאל רב, ואני בטוח שעם עוד קצת השקעה הוא יבוא לידי ביטוי גם בציונים.',
                 'אתה נבון ומוכשר, אך משהו עוצר אותך מלהמריא. אני מאמין שאם רק תחליט - השמיים הם הגבול.',
-                'הפער בין היכולות שלך לבין התוצאות בפועל הוא מתסכל. קח אחריות, התאמץ יותר ותראה ברכה בעמלך.',
+                'היכולות שלך גבוהות מהתוצאות שאתה מקבל היום. כשתשקיע עוד קצת, תראה ברכה בעמלך.',
                 'אל תיתן לכישרון שלך להתבזבז. עם קצת יותר מאמץ ורצינות, אתה יכול להגיע להישגים מצוינים.',
-                'אני רואה את היכולות, אך לא את המאמץ. כדי להצליח לא מספיק להיות חכם, צריך גם לעבוד קשה.',
-                'זה הזמן להתעורר. אל תסתפק בבינוניות כשיש לך יכולת להצטיין. אני מחכה לראות את הפריצה שלך.'
+                'אני רואה את היכולות הגדולות שלך. כשתוסיף להן גם מאמץ והתמדה, ההצלחה תגיע.',
+                'יש לך את כל מה שצריך כדי להצטיין, ואני מחכה בסבלנות לראות את הפריצה שלך.'
             ], 
             f: [
-                'יש לך פוטנציאל רב, אך לצערי הוא אינו בא לידי ביטוי מלא בציונים. נדרשת השקעה רבה יותר.',
+                'יש לך פוטנציאל רב, ואני בטוח שעם עוד קצת השקעה הוא יבוא לידי ביטוי גם בציונים.',
                 'את נבונה ומוכשרת, אך משהו עוצר אותך מלהמריא. אני מאמין שאם רק תחליטי - השמיים הם הגבול.',
-                'הפער בין היכולות שלך לבין התוצאות בפועל הוא מתסכל. קחי אחריות, התאמצי יותר ותראי ברכה בעמלך.',
+                'היכולות שלך גבוהות מהתוצאות שאת מקבלת היום. כשתשקיעי עוד קצת, תראי ברכה בעמלך.',
                 'אל תתני לכישרון שלך להתבזבז. עם קצת יותר מאמץ ורצינות, את יכולה להגיע להישגים מצוינים.',
-                'אני רואה את היכולות, אך לא את המאמץ. כדי להצליח לא מספיק להיות חכמה, צריך גם לעבוד קשה.',
-                'זה הזמן להתעורר. אל תסתפקי בבינוניות כשיש לך יכולת להצטיין. אני מחכה לראות את הפריצה שלך.'
+                'אני רואה את היכולות הגדולות שלך. כשתוסיפי להן גם מאמץ והתמדה, ההצלחה תגיע.',
+                'יש לך את כל מה שצריך כדי להצטיין, ואני מחכה בסבלנות לראות את הפריצה שלך.'
             ] 
         },
         { id: 'language_barrier', label: 'התמודדות עם קשיי שפה', m: ['אני מודע לאתגר השפתי שאתה מתמודד איתו. ראיתי את המאמצים האדירים שלך לגשר על הפער, ואני גאה בך על כך.', 'ההתמודדות שלך עם רכישת השפה ראויה להערכה רבה. למרות הקושי, אתה לא מוותר וממשיך לנסות.', 'כל הכבוד על ההתמדה בלימוד השפה. אני רואה את ההתקדמות שלך ואת הרצון להשתלב.'], f: ['אני מודע לאתגר השפתי שאת מתמודדת איתו. ראיתי את המאמצים האדירים שלך לגשר על הפער, ואני גאה בך על כך.', 'ההתמודדות שלך עם רכישת השפה ראויה להערכה רבה. למרות הקושי, את לא מוותרת וממשיכה לנסות.', 'כל הכבוד על ההתמדה בלימוד השפה. אני רואה את ההתקדמות שלך ואת הרצון להשתלב.'] },
@@ -477,8 +469,8 @@ const traitsData = [
         { id: 'continue_path', label: 'המשך בדרכך הטובה', m: ['אני גאה בך מאוד, המשך בדרכך הטובה והישר כוח.', 'אתה נמצא על דרך המלך, המשך להתמיד ולהשקיע כפי שעשית עד כה.'], f: ['אני גאה בך מאוד, המשיכי בדרכך הטובה והישר כוח.', 'את נמצאת על דרך המלך, המשיכי להתמיד ולהשקיע כפי שעשית עד כה.'] },
         { id: 'effort_next', label: 'יותר מאמץ והשקעה', m: ['כדי לממש את הפוטנציאל הטמון בך, נדרש ממך יותר מאמץ והשקעה במחצית הבאה.', 'אני מצפה ממך להעלות הילוך ולהשקיע יותר מאמץ בלימודים לקראת ההמשך.'], f: ['כדי לממש את הפוטנציאל הטמון בך, נדרש ממך יותר מאמץ והשקעה במחצית הבאה.', 'אני מצפה ממך להעלות הילוך ולהשקיע יותר מאמץ בלימודים לקראת ההמשך.'] },
         { id: 'proper_behavior', label: 'התנהגות ראויה בשיעור', m: ['עליך לגלות בגרות ולהקפיד על התנהגות ראויה ומכבדת במהלך השיעורים.', 'אני מצפה ממך לשמור על כללי ההתנהגות בשיעור ולהימנע מהפרעות.'], f: ['עלייך לגלות בגרות ולהקפיד על התנהגות ראויה ומכבדת במהלך השיעורים.', 'אני מצפה ממך לשמור על כללי ההתנהגות בשיעור ולהימנע מהפרעות.'] },
-        { id: 'no_wandering', label: 'להימנע משוטטות', m: ['מצפה ממך להישאר בכיתה במהלך השיעורים ולהימנע משוטטות מיותרת בבית הספר.', 'מקומך בשיעור. הקפד להישאר בכיתה ולהימנע מיציאות שאינן הכרחיות.'], f: ['מצפה ממך להישאר בכיתה במהלך השיעורים ולהימנע משוטטות מיותרת בבית הספר.', 'מקומך בשיעור. הקפידי להישאר בכיתה ולהימנע מיציאות שאינן הכרחיות.'] },
-        { id: 'no_phone', label: 'להימנע משימוש בנייד', m: ['עליך לנתק את הטלפון הנייד ולהשאירו בתיק במהלך השיעורים, כדי להיות מרוכז בלמידה.', 'השימוש בטלפון נייד בזמן שיעור אסור ופוגע בריכוז שלך. הקפד על כך.'], f: ['עלייך לנתק את הטלפון הנייד ולהשאירו בתיק במהלך השיעורים, כדי להיות מרוכזת בלמידה.', 'השימוש בטלפון נייד בזמן שיעור אסור ופוגע בריכוז שלך. הקפידי על כך.'] },
+        { id: 'no_wandering', label: 'להימנע משוטטות', m: ['אשמח לראות אותך נשאר בכיתה לאורך כל השיעור, שם המקום שבו אתה מצליח.', 'כשאתה בכיתה לאורך כל השיעור, אתה מרוויח הרבה יותר. הקפד על כך.'], f: ['אשמח לראות אותך נשאר בכיתה לאורך כל השיעור, שם המקום שבו אתה מצליח.', 'כשאת בכיתה לאורך כל השיעור, את מרוויחה הרבה יותר. הקפידי על כך.'] },
+        { id: 'no_phone', label: 'להימנע משימוש בנייד', m: ['כדאי להשאיר את הטלפון בתיק במהלך השיעורים, כך תוכל להיות מרוכז בלמידה.', 'הטלפון בשיעור מסיח את הדעת. בלעדיו תוכל להפיק מהשיעור הרבה יותר.'], f: ['כדאי להשאיר את הטלפון בתיק במהלך השיעורים, כך תוכלי להיות מרוכזת בלמידה.', 'הטלפון בשיעור מסיח את הדעת. בלעדיו תוכלי להפיק מהשיעור הרבה יותר.'] },
         { id: 'no_chatting', label: 'להימנע מפטפוטים', m: ['עליך לצמצם משמעותית את הפטפוטים בשיעור, הם מפריעים לך ולסביבה ללמוד.', 'שמור על השקט בשיעורים והימנע משיחות מיותרות שמסיחות את הדעת.'], f: ['עלייך לצמצם משמעותית את הפטפוטים בשיעור, הם מפריעים לך ולסביבה ללמוד.', 'שמרי על השקט בשיעורים והימנעי משיחות מיותרות שמסיחות את הדעת.'] },
         { id: 'take_seriously', label: 'לקחת לימודים ברצינות', m: ['הגיע הזמן לקחת את הלימודים ברצינות רבה יותר ולהבין את חשיבותם לעתידך.', 'גלה אחריות ורצינות כלפי המטלות הלימודיות שלך.'], f: ['הגיע הזמן לקחת את הלימודים ברצינות רבה יותר ולהבין את חשיבותם לעתידך.', 'גלי אחריות ורצינות כלפי המטלות הלימודיות שלך.'] },
         { id: 'highschool_prep', label: 'מוכנות לתיכון', m: ['המשך להתכונן ברצינות לתיכון. ההרגלים עכשיו חשובים.', 'אתה בדרך הנכונה לתיכון, המשך כך.', 'ההשקעה כעת היא הבסיס להצלחה בתיכון.', 'הרגלי הלמידה שאתה רוכש ישמשו אותך בתיכון.'], f: ['המשכי להתכונן ברצינות לתיכון. ההרגלים עכשיו חשובים.', 'את בדרך הנכונה לתיכון, המשיכי כך.', 'ההשקעה כעת היא הבסיס להצלחה בתיכון.', 'הרגלי הלמידה שאת רוכשת ישמשו אותך בתיכון.'] },
@@ -656,7 +648,7 @@ const challengesData = [
   { id:'chatting', label:'פטפוטים', phrase:'צמצום הפטפוטים בשיעור',
     long:['לעיתים הפטפוטים בשיעור פוגעים בריכוז שלך ושל {חבריך|חברייך} לכיתה. {עליך|עלייך} לצמצם אותם.','{אתה נוטה|את נוטה} לפטפט בשיעורים, וזה פוגע בלמידה. אני בטוח {שתוכל|שתוכלי} לשפר זאת.'] },
   { id:'disrupt', label:'הפרעות בשיעור', phrase:'התנהגות ראויה בשיעור',
-    long:['היו מקרים שבהם הפרעת למהלך השיעור. אני מצפה ממך להקפיד על התנהגות ראויה ומכבדת.','ההפרעות בשיעור פוגעות בך ובסביבה. {אתה מסוגל|את מסוגלת} להתנהל אחרת, ואני מאמין בך.'] },
+    long:['היו פעמים שבהן היה לך קשה לשמור על שקט בשיעור. אני יודע {שאתה מסוגל|שאת מסוגלת} לזה, ואני מאמין בך.','כשהשיעור מתנהל בשקט, כולם מרוויחים, וגם {אתה|את}. אני סומך עליך {שתשמור|שתשמרי} על כך.'] },
   { id:'focus', label:'קושי בריכוז', phrase:'ריכוז והקשבה בשיעור',
     long:['לעיתים {אתה מתקשה|את מתקשה} להתרכז לאורך השיעור. עם מעט יותר מאמץ {תוכל|תוכלי} להפיק הרבה יותר מהשיעורים.','הריכוז בשיעור הוא אתגר עבורך. כדאי לשבת קרוב ללוח ולהתמקד במשימה שלפניך.'] },
   { id:'homework', label:'שיעורי בית', phrase:'הכנת שיעורי בית',
@@ -670,13 +662,13 @@ const challengesData = [
   { id:'phone', label:'שימוש בנייד', phrase:'הימנעות משימוש בנייד בשיעור',
     long:['השימוש בטלפון הנייד בשיעורים פוגע בריכוז שלך. {עליך|עלייך} להשאיר אותו בתיק.','{הקפד|הקפידי} שהנייד יישאר בתיק במהלך השיעורים, כדי להיות {מרוכז|מרוכזת} בלמידה.'] },
   { id:'wandering', label:'שוטטות', phrase:'נוכחות בשיעורים ללא יציאות מיותרות',
-    long:['{אתה נוטה|את נוטה} לצאת מהכיתה ולשוטט במהלך השיעורים. מקומך בשיעור.','היציאות מהשיעורים פוגעות ברצף הלמידה שלך. {הקפד|הקפידי} להישאר בכיתה.'] },
+    long:['אשמח לראות אותך {נשאר|נשארת} בכיתה לאורך כל השיעור, שם המקום שבו {אתה מצליח|את מצליחה}.','כשלומדים ברצף, הרבה יותר קל להצליח. {נסה|נסי} להישאר בכיתה לאורך כל השיעור.'] },
   { id:'restraint', label:'קושי באיפוק', phrase:'איפוק ושליטה עצמית',
     long:['היו מקרים שבהם התקשית לשמור על איפוק. אני בטוח {שתוכל|שתוכלי} לשפר זאת.','{עליך|עלייך} ללמוד לעצור ולחשוב לפני שמגיבים. אני מאמין ביכולת שלך לעשות זאת.'] },
   { id:'authority', label:'קבלת גבולות', phrase:'קבלת הוראות וגבולות',
     long:['לעיתים קשה לך לקבל הוראות וגבולות. אני מצפה ממך להקשיב ולשתף פעולה.','{עליך|עלייך} לקבל את הגבולות בכיתה בבגרות, גם כשזה לא קל.'] },
   { id:'language', label:'שפה לא מכבדת', phrase:'שפה מכבדת',
-    long:['{עליך|עלייך} להקפיד על שפה נקייה ומכבדת כלפי מורים וחברים.','לעיתים השפה שלך אינה מכבדת. אני מצפה ממך לדבר בכבוד לכל אדם.'] },
+    long:['כדאי לך להקפיד על שפה נקייה ומכבדת כלפי מורים וחברים, כי זה משקף את מי {שאתה|שאת} באמת.','מילים טובות פותחות דלתות. חשוב לי {שתקפיד|שתקפידי} לדבר בכבוד אל כולם.'] },
   { id:'teamwork', label:'עבודה בקבוצה', phrase:'שיתוף פעולה בעבודה בקבוצה',
     long:['בעבודה בקבוצה כדאי לך להקשיב יותר לאחרים ולשתף פעולה.'] },
   { id:'passive', label:'פסיביות בשיעור', phrase:'השתתפות פעילה בשיעור',
@@ -720,7 +712,7 @@ const attendanceData = [
   { id:'full', label:'נוכחות מלאה', long:'נוכחותך בבית הספר מופתית, ואני מעריך מאוד את הרצינות שלך.', short:'{הוא מקפיד|היא מקפידה} על נוכחות מלאה.' },
   { id:'regular', label:'נוכחות סדירה', long:'ההקפדה שלך על הגעה סדירה ראויה להערכה ותורמת להצלחתך.', short:'{הוא מקפיד|היא מקפידה} על הגעה סדירה.' },
   { id:'late', label:'ריבוי איחורים', long:'{עליך|עלייך} להקפיד יותר על הגעה בזמן לשיעורים.', phrases:['הגעה בזמן לשיעורים'] },
-  { id:'absent', label:'ריבוי חיסורים', long:'לצערי, צברת חיסורים רבים שפגעו ביכולתך להתקדם. {עליך|עלייך} לשפר זאת.', phrases:['הגעה סדירה לבית הספר'] },
+  { id:'absent', label:'ריבוי חיסורים', long:'החיסורים הרבים מקשים {עליך|עלייך} להתקדם, וחשוב לי {שתגיע|שתגיעי} בקביעות. כל יום בבית הספר חשוב.', phrases:['הגעה סדירה לבית הספר'] },
   { id:'both', label:'איחורים וחיסורים', long:'האיחורים והחיסורים הרבים פוגעים ברצף הלמידה שלך, ו{עליך|עלייך} להקפיד על הגעה סדירה ובזמן.', phrases:['הגעה סדירה ובזמן לבית הספר'] }
 ];
 
@@ -841,7 +833,7 @@ function setSeg(id, key, v, after){
 function updateModeUI(){
   const long = state.mode === 'long';
   $('lenWrap').classList.toggle('hidden', !long);
-  $('sheetKind').textContent = long ? 'לתעודה, פנייה אישית' : 'ליום הורים, בגוף שלישי';
+  $('sheetKind').textContent = long ? 'לתעודה' : 'ליום הורים, קצר';
 }
 
 const nameVal = () => $('name').value.trim();
@@ -895,46 +887,54 @@ function buildLong(){
 }
 
 function buildShort(){
-  const name = nameVal();
+  // יום הורים: קצר, חם, בפנייה ישירה לתלמיד/ה
+  const m = isM(), name = nameVal();
   const out = [];
-  const adjs = state.traits.slice(0,4).map(id => g(TRAIT_ADJ[id] || '')).filter(Boolean);
+  const greet = name ? pick('sgreet', [`${name} ${m?'היקר':'היקרה'},`, `${name} ${m?'יקר':'יקרה'},`]) : (m ? 'תלמיד יקר,' : 'תלמידה יקרה,');
+  const adjs = state.traits.slice(0,3).map(id => g(TRAIT_ADJ[id] || '')).filter(Boolean);
   if (adjs.length){
-    out.push(name
-      ? pick('sopen', [`${name} ${g('{תלמיד|תלמידה}')} ${joinHe(adjs)}.`, `${name} ${g('{הוא תלמיד|היא תלמידה}')} ${joinHe(adjs)}.`])
-      : `${g('{הוא תלמיד|היא תלמידה}')} ${joinHe(adjs)}.`);
+    out.push(g(pick('sopen', [
+      '{אתה תלמיד|את תלמידה} {list}, ונעים מאוד ללמד אותך.',
+      '{אתה תלמיד|את תלמידה} {list}, ותענוג לראות אותך בכיתה.',
+      'אני שמח ללמד {תלמיד|תלמידה} {list} כמוך.'
+    ])).replace('{list}', joinHe(adjs)));
   }
   const subj = state.subjects.map(id => byId(subjectsData,id));
-  if (subj.length) out.push(listSentence('ssubj', SUBJECT_SHORT, subj));
+  if (subj.length) out.push(listSentence('ssubj', SUBJECT_LONG, subj));
   const ach = byId(achievementData, state.achievement);
-  if (ach && ach.short) out.push(g(pick('sa:'+ach.id, ach.short)));
-  if (state.process !== 'none' && PROCESS_SHORT[state.process]) out.push(g(pick('sp:'+state.process, PROCESS_SHORT[state.process])));
+  if (ach && ach.long) out.push(g(pick('a:'+ach.id, ach.long)));
+  if (state.process !== 'none'){ const p = byId(processData, state.process); out.push(pick('p:'+p.id, m ? p.m : p.f)); }
   const acts = state.activities.map(id => byId(activitiesData,id));
-  if (acts.length) out.push(listSentence('sact', ACT_SHORT, acts));
+  if (acts.length) out.push(listSentence('act', ACT_LONG, acts));
   const att = byId(attendanceData, state.attendance);
-  if (att && att.short) out.push(g(att.short));
+  if (att && att.short) out.push(g(att.long));
 
   const phrases = state.challenges.map(id => byId(challengesData,id).phrase);
   if (att && att.phrases) phrases.push(...att.phrases);
   if (phrases.length){
-    const pre = out.length ? 'עם זאת, ' : '';
-    out.push(pre + g(pick('sneg', ['{עליו|עליה} להקפיד יותר על ','חשוב {שיקפיד|שתקפיד} יותר על '])) + joinHe(phrases) + '.');
+    const pre = out.length ? 'יחד עם זאת, ' : '';
+    out.push(pre + g(pick('sneg', [
+      'כדאי לך להקפיד יותר על {list}, ואני בטוח {שתצליח|שתצליחי}.',
+      'אשמח לראות אותך {מקפיד|מקפידה} יותר על {list}. אני יודע {שאתה יכול|שאת יכולה}.',
+      'המשימה שלך להמשך היא להקפיד יותר על {list}, ואני כאן כדי לעזור.'
+    ])).replace('{list}', joinHe(phrases)));
   }
-  state.emotional.forEach(id => out.push(g(pick('se:'+id, byId(emotionalData,id).short))));
-  if (!out.length) out.push(`${name || g('{הוא|היא}')} ${g('{תלמיד נעים, ונעים לראות אותו בכיתה|תלמידה נעימה, ונעים לראות אותה בכיתה}')}.`);
+  state.emotional.slice(0,1).forEach(id => out.push(g(pick('e:'+id, byId(emotionalData,id).long))));
   const c = custom(); if (c) out.push(c);
-  state.goals.slice(0,2).forEach(id => { if (GOAL_SHORT[id]) out.push(g(GOAL_SHORT[id])); });
+  const gl = state.goals.slice(0,1).map(id => { const d = byId(goalsData,id); return pick('g:'+id, m ? d.m : d.f); });
+  out.push(gl.length ? gl[0] : g(pick('sbelieve', ['אני מאמין בך.', 'אני גאה בך ומאמין בך.'])));
 
   const subject = $('subject').value.trim();
-  let text = out.join(' ');
-  if (subject) text = `בשיעורי ${subject}, ` + text;
-  return text;
+  const body = (subject ? `בשיעורי ${subject}, ` + out[0].replace(/^(.)/, s => s) : out[0]) + (out.length > 1 ? ' ' + out.slice(1).join(' ') : '');
+  return greet + '\n' + body;
 }
 
 function render(){
   $('out').value = hasAny() ? (state.mode === 'long' ? buildLong() : buildShort()) : '';
   $('sheetTitle').textContent = nameVal() ? `הנימה של ${nameVal()}` : 'הנימה';
-  updateCount();
+  autosize(); updateCount();
 }
+function autosize(){ const o = $('out'); o.style.height = 'auto'; o.style.height = Math.max(300, o.scrollHeight + 4) + 'px'; }
 function reroll(){ seeds = {}; render(); }
 function updateCount(){
   const t = $('out').value, lim = +$('limit').value || 0;
@@ -1049,7 +1049,7 @@ updateModeUI();
 });
 $('name').addEventListener('input', render);
 $('custom').addEventListener('input', render);
-$('out').addEventListener('input', updateCount);
+$('out').addEventListener('input', () => { autosize(); updateCount(); });
 
 $('again').addEventListener('click', reroll);
 $('mAgain').addEventListener('click', reroll);

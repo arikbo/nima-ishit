@@ -1016,11 +1016,12 @@ function renderRoster(){
   $('roster').querySelectorAll('.rname').forEach(b => b.addEventListener('click', () => loadStudent(+b.dataset.i)));
 }
 const firstOf = full => { const parts = String(full).trim().split(/\s+/); return ($('nameOrder').value === 'last' ? parts[parts.length-1] : parts[0]) || full; };
-const savedNameNow = () => (curIdx >= 0 && roster[curIdx] && nameVal() === firstOf(roster[curIdx].name)) ? roster[curIdx].name : nameVal();
+const firstOfR = r => r.first || firstOf(r.name);
+const savedNameNow = () => (curIdx >= 0 && roster[curIdx] && nameVal() === firstOfR(roster[curIdx])) ? roster[curIdx].name : nameVal();
 function loadStudent(i){
   const r = roster[i]; if (!r) return;
   curIdx = i; resetSelections();
-  $('name').value = firstOf(r.name);
+  $('name').value = firstOfR(r);
   if (r.g) setSeg('genderSeg','gender', r.g);
   renderRoster(); render();
   window.scrollTo({ top: 0 });
@@ -1140,8 +1141,19 @@ const genderOf = v => {
 };
 function rosterFromRows(rows){
   rows = rows.map(r => r.map(c => String(c ?? '').trim()));
-  let h = -1;
-  for (let i = 0; i < Math.min(rows.length, 15); i++) if (rows[i].some(c => /שם|פרטי|משפחה/.test(c))) { h = i; break; }
+  // שורת הכותרות: השורה עם הכי הרבה כותרות שם מוכרות (ולא שורת כותרת ראשית כמו "שם המבחן")
+  let h = -1, best = 0;
+  for (let i = 0; i < Math.min(rows.length, 25); i++){
+    let sc = 0;
+    rows[i].forEach(c => {
+      if (!c || c.length > 25) return;
+      if (/פרטי/.test(c)) sc += 3;
+      else if (/משפחה/.test(c)) sc += 3;
+      else if (/^(שם|שם התלמיד|שם תלמיד|שם מלא|תלמיד|שם התלמידה)$/.test(c)) sc += 2;
+      else if (/^(מין|מגדר)$/.test(c)) sc += 1;
+    });
+    if (sc > best){ best = sc; h = i; }
+  }
   let firstC = -1, lastC = -1, fullC = -1, genC = -1, start = 0;
   if (h >= 0){
     const hd = rows[h]; start = h + 1;
@@ -1149,7 +1161,7 @@ function rosterFromRows(rows){
       if (/פרטי/.test(c) && firstC < 0) firstC = j;
       else if (/משפחה/.test(c) && lastC < 0) lastC = j;
       else if (/^(מין|מגדר)$|מין|מגדר|זכר\/נקבה/.test(c) && genC < 0) genC = j;
-      else if (/שם/.test(c) && !/בית ספר|מורה|הורה|אב|אם|כיתה|מקצוע/.test(c) && fullC < 0) fullC = j;
+      else if (/^(שם|שם התלמיד|שם תלמיד|שם מלא|תלמיד|שם התלמידה)$/.test(c) && fullC < 0) fullC = j;
     });
   }
   if (firstC < 0 && fullC < 0){
@@ -1165,8 +1177,8 @@ function rosterFromRows(rows){
     if (firstC >= 0) name = [r[firstC], lastC >= 0 ? r[lastC] : ''].filter(Boolean).join(' ');
     else name = r[fullC];
     name = (name || '').replace(/\s+/g, ' ').trim();
-    if (!name || !/[א-תa-zA-Z]/.test(name) || /^(סה"כ|סך הכל)/.test(name)) return;
-    out.push({ name, g: genC >= 0 ? genderOf(r[genC]) : null });
+    if (!name || !/[א-תa-zA-Z]/.test(name) || /^(סה"כ|סה״כ|סך הכל|ממוצע|אחוז|מספר|שם|שם פרטי|שם משפחה)/.test(name)) return;
+    out.push({ name, g: genC >= 0 ? genderOf(r[genC]) : null, first: firstC >= 0 ? r[firstC].replace(/\s+/g,' ').trim() : undefined });
   });
   return { list: out, firstFirst: firstC >= 0 };
 }
@@ -1189,7 +1201,7 @@ $('rosterFile').addEventListener('change', async e => {
   } finally { e.target.value = ''; }
 });
 $('nameOrder').value = store.get('nima_nameOrder', 'first');
-$('nameOrder').addEventListener('change', () => { store.set('nima_nameOrder', $('nameOrder').value); if (curIdx >= 0) { $('name').value = firstOf(roster[curIdx].name); render(); } });
+$('nameOrder').addEventListener('change', () => { store.set('nima_nameOrder', $('nameOrder').value); if (curIdx >= 0) { $('name').value = firstOfR(roster[curIdx]); render(); } });
 
 // ===== ערכת צבעים =====
 function setTheme(th){

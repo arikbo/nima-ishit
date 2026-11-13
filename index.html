@@ -3,217 +3,278 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>מחולל נימות אישיות</title>
+<title>ממני אליך - מחולל נימות אישיות</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700;900&family=Assistant:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#f2f4f8; --card:#fff; --ink:#1f2a37; --muted:#6b7280; --line:#e5e7eb;
-    --accent:#2563eb; --accent-soft:#e8f0fe; --warn:#b45309; --warn-soft:#fff4e5;
-    --good:#047857; --good-soft:#e7f7f1; --emo:#7c3aed; --emo-soft:#f3edff; --gold:#a16207; --gold-soft:#fef7dc;
+    --paper:#fbfcfe; --grid:#e4ebf4; --graphite:#23272f; --soft:#5d6675; --faint:#97a0ad;
+    --ink:#1f3fa6; --ink-deep:#16307f; --red:#d2302b;
+    --hl-yellow:#ffe45c; --hl-pink:#ffb3c7; --hl-green:#9ee6b0; --hl-lilac:#d6c4ff; --hl-orange:#ffc98a; --hl-blue:#b9dcff;
+    --serif:'Frank Ruhl Libre', 'David', serif;
+    --sans:'Assistant', 'Segoe UI', Arial, sans-serif;
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Heebo','Segoe UI',Tahoma,sans-serif;font-size:16px;line-height:1.45}
-  .wrap{max-width:940px;margin:0 auto;padding:14px 12px 110px}
-  header{text-align:center;margin:4px 0 14px}
-  header h1{font-size:1.5rem;margin:0;font-weight:800;background:linear-gradient(90deg,#1d4ed8,#7c3aed);-webkit-background-clip:text;background-clip:text;color:transparent}
-  header p{margin:4px 0 0;color:var(--muted);font-size:.9rem}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px}
-  .card h2{font-size:1rem;margin:0 0 8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-  .card h2 small{font-weight:400;color:var(--muted);font-size:.8rem}
-  details.card{padding:0}
-  details.card > summary{list-style:none;cursor:pointer;padding:12px;display:flex;align-items:center;gap:6px;font-weight:700;user-select:none}
-  details.card > summary::-webkit-details-marker{display:none}
-  details.card > summary::after{content:'▾';margin-inline-start:auto;color:var(--muted);transition:transform .15s}
-  details.card:not([open]) > summary::after{transform:rotate(90deg)}
-  details.card > summary small{font-weight:400;color:var(--muted);font-size:.8rem}
-  details.card .body{padding:0 12px 12px}
-  .badge{background:var(--accent);color:#fff;border-radius:999px;font-size:.72rem;padding:1px 8px;font-weight:700;display:none}
-  .badge.show{display:inline-block}
-  .row{display:flex;gap:8px;flex-wrap:wrap}
-  .row > *{flex:1 1 150px}
-  input[type=text],input[type=number],select,textarea{width:100%;padding:9px 10px;border:1px solid #cfd5dd;border-radius:9px;font:inherit;background:#fff;color:var(--ink)}
-  label.lbl{font-size:.8rem;color:var(--muted);display:block;margin:0 2px 3px}
-  .seg{display:flex;border:1px solid #cfd5dd;border-radius:10px;overflow:hidden;background:#fff}
-  .seg button{flex:1;border:0;background:#fff;padding:9px 6px;font:inherit;cursor:pointer;color:var(--ink);font-size:.95rem}
-  .seg button + button{border-inline-start:1px solid #cfd5dd}
-  .seg button.on{background:var(--accent);color:#fff;font-weight:700}
-  .hint{margin:8px 0 0;font-size:.84rem;color:var(--muted)}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:6px}
-  .chip{border:1px solid #cfd5dd;background:#fff;border-radius:9px;padding:6px 4px;min-height:44px;font:inherit;font-size:.88rem;line-height:1.15;cursor:pointer;color:var(--ink);display:flex;align-items:center;justify-content:center;text-align:center;transition:background .1s}
-  .chip:hover{border-color:#9aa4b2}
-  .chip.on{background:var(--accent-soft);border-color:var(--accent);color:#123a8f;font-weight:700;box-shadow:inset 0 0 0 1px var(--accent)}
-  .neg .chip.on{background:var(--warn-soft);border-color:var(--warn);color:#7a3d06;box-shadow:inset 0 0 0 1px var(--warn)}
-  .emo .chip.on{background:var(--emo-soft);border-color:var(--emo);color:#4c1d95;box-shadow:inset 0 0 0 1px var(--emo)}
-  .goal .chip.on{background:var(--good-soft);border-color:var(--good);color:#064e3b;box-shadow:inset 0 0 0 1px var(--good)}
-  .gold .chip.on{background:var(--gold-soft);border-color:var(--gold);color:#713f12;box-shadow:inset 0 0 0 1px var(--gold)}
-  .presets{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
-  .preset{flex:0 0 auto;border:1px dashed #94a3b8;background:#f8fafc;border-radius:999px;padding:7px 12px;font:inherit;font-size:.86rem;cursor:pointer;color:var(--ink);white-space:nowrap}
-  .preset:hover{background:#eef2ff;border-color:var(--accent)}
-  .roster{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-  .rname{border:1px solid #cfd5dd;background:#fff;border-radius:999px;padding:5px 11px;font:inherit;font-size:.86rem;cursor:pointer;color:var(--ink)}
-  .rname.done{background:#ecfdf5;border-color:#6ee7b7;color:#065f46}
-  .rname.done::before{content:'✓ '}
-  .rname.cur{background:var(--accent);border-color:var(--accent);color:#fff}
-  .rname .gx{font-size:.72rem;opacity:.7;margin-inline-start:3px}
+  @media (prefers-reduced-motion: reduce){ *{transition:none !important} }
+  body{
+    margin:0; color:var(--graphite); font-family:var(--sans); font-size:17px; line-height:1.5;
+    background-color:var(--paper);
+    background-image:linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size:24px 24px;
+  }
+  button, input, select, textarea{font:inherit; color:inherit}
+  :focus-visible{outline:3px solid var(--ink); outline-offset:2px}
+
+  .masthead{max-width:1240px; margin:0 auto; padding:28px 20px 8px; display:flex; align-items:flex-end; justify-content:space-between; gap:16px; flex-wrap:wrap}
+  .masthead h1{font-family:var(--serif); font-weight:900; font-size:clamp(2.6rem, 6vw, 4.2rem); line-height:.95; margin:0; color:var(--ink-deep); letter-spacing:-.01em}
+  .masthead p{margin:6px 0 0; color:var(--soft); font-size:1.02rem}
+
+  .toggle{display:inline-flex; background:#fff; border:1.5px solid var(--graphite); border-radius:999px; padding:3px}
+  .toggle button{border:0; background:none; padding:7px 15px; border-radius:999px; cursor:pointer; font-weight:600; font-size:.95rem}
+  .toggle button.on{background:var(--graphite); color:#fff}
+
+  .layout{max-width:1240px; margin:0 auto; padding:12px 20px 40px; display:grid; grid-template-columns:minmax(0,1.25fr) minmax(0,1fr); gap:28px; align-items:start}
+  .controls{min-width:0}
+  .sheet-col{position:sticky; top:16px; min-width:0}
+  @media (max-width: 900px){
+    .layout{grid-template-columns:1fr; gap:18px; padding-bottom:100px}
+    .sheet-col{position:static}
+  }
+
+  .who{background:#fff; border:1.5px solid var(--graphite); border-radius:14px; padding:14px; display:grid; grid-template-columns:1fr auto; gap:10px; align-items:center; box-shadow:4px 4px 0 var(--graphite)}
+  .who input{border:0; border-bottom:2px solid var(--grid); padding:6px 2px; font-family:var(--serif); font-size:1.5rem; font-weight:700; background:transparent; width:100%; color:var(--ink-deep)}
+  .who input::placeholder{color:#b9c1cc; font-weight:500}
+  .who input:focus{outline:none; border-bottom-color:var(--ink)}
+  .who .len{grid-column:1/-1; display:flex; align-items:center; gap:10px; flex-wrap:wrap; color:var(--soft); font-size:.92rem}
+  @media (max-width:520px){ .who{grid-template-columns:1fr} .who .toggle{display:flex} .who .toggle button{flex:1} .who .len{flex-direction:column; align-items:stretch; gap:4px} }
+
+  .shortcuts{margin:20px 0 4px}
+  .shortcuts h3{font-family:var(--serif); font-size:1.05rem; margin:0 0 9px; font-weight:700}
+  .shortcuts h3 span{font-family:var(--sans); font-weight:400; color:var(--soft); font-size:.88rem; margin-inline-start:8px}
+  .presets{display:flex; gap:9px; flex-wrap:wrap}
+  .preset{background:#fff6b8; border:0; border-radius:2px; padding:9px 13px 10px; cursor:pointer; font-weight:600; font-size:.92rem; box-shadow:0 1px 0 rgba(0,0,0,.06), 0 4px 7px -4px rgba(0,0,0,.3); transform:rotate(-.8deg); transition:transform .12s}
+  .preset:nth-child(even){transform:rotate(.8deg); background:#dff0ff}
+  .preset:nth-child(3n){background:#ffe3ea}
+  .preset:hover{transform:rotate(0) translateY(-2px)}
+
+  .group{margin-top:24px}
+  .group > summary{list-style:none; cursor:pointer; display:flex; align-items:baseline; gap:8px; padding-bottom:6px; border-bottom:1.5px solid var(--graphite); margin-bottom:10px}
+  .group > summary::-webkit-details-marker{display:none}
+  .group > summary h2{font-family:var(--serif); font-size:1.35rem; font-weight:700; margin:0}
+  .group > summary .note{color:var(--soft); font-size:.88rem}
+  .group > summary .count{margin-inline-start:auto; font-weight:700; color:var(--ink); font-size:.95rem}
+  .group > summary .caret{color:var(--faint); font-size:.9rem; transition:transform .15s}
+  .group:not([open]) > summary .caret{transform:rotate(90deg)}
+
+  /* בחירה = מרקר זוהר */
+  .marks{display:flex; flex-wrap:wrap; gap:4px 4px}
+  .mark{--hl:var(--hl-yellow); position:relative; z-index:0; border:0; background:none; cursor:pointer; padding:5px 9px; font-size:1rem; line-height:1.3; border-radius:4px}
+  .mark::before{content:''; position:absolute; inset:5px 1px 3px; border-radius:3px 8px 4px 9px; background:var(--hl); transform:scaleX(0); transform-origin:right; transition:transform .16s ease-out; z-index:-1}
+  .mark:hover{background:rgba(35,39,47,.06)}
+  .mark.on{font-weight:700}
+  .mark.on::before{transform:scaleX(1) skewX(-7deg)}
+  [data-hl="pink"] .mark{--hl:var(--hl-pink)}
+  [data-hl="green"] .mark{--hl:var(--hl-green)}
+  [data-hl="lilac"] .mark{--hl:var(--hl-lilac)}
+  [data-hl="orange"] .mark{--hl:var(--hl-orange)}
+  [data-hl="blue"] .mark{--hl:var(--hl-blue)}
+
+  .free{width:100%; background:#fff; border:1.5px solid #cfd6e0; border-radius:10px; padding:10px 12px}
+  .free:focus{border-color:var(--ink); outline:none}
+
+  /* הדף */
+  .sheet{background:#fff; border-radius:3px; position:relative; padding:20px 16px 16px 22px; box-shadow:0 1px 0 #dfe5ee, 0 18px 40px -22px rgba(22,48,127,.45)}
+  .sheet::before{content:''; position:absolute; top:22px; height:calc(2.05rem * 13); left:6px; width:12px; background:radial-gradient(circle at 6px 10px, var(--grid) 4.5px, transparent 5.5px) 0 0/12px 56px repeat-y}
+  .sheet-head{display:flex; justify-content:space-between; align-items:baseline; gap:8px; margin:0 0 6px; padding-inline-start:32px}
+  .sheet-head b{font-family:var(--serif); font-size:1.15rem; color:var(--ink-deep)}
+  .sheet-head small{color:var(--soft)}
+  .page{
+    --lh:2.05rem;
+    display:block; width:100%; min-height:calc(var(--lh) * 13); border:0; resize:vertical; padding:4px 32px 4px 8px; margin:0;
+    font-family:var(--serif); font-size:1.13rem; line-height:var(--lh); color:#1b2a6b; background-color:#fff;
+    background-image:
+      linear-gradient(to left, transparent 22px, rgba(210,48,43,.6) 22px, rgba(210,48,43,.6) 24px, transparent 24px),
+      repeating-linear-gradient(to bottom, transparent 0, transparent calc(var(--lh) - 1px), #c9d8ee calc(var(--lh) - 1px), #c9d8ee var(--lh));
+    background-attachment:local; background-position:0 4px;
+  }
+  .page:focus{outline:none}
+  .page::placeholder{color:#a7b1c2}
+  .meta{display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; color:var(--soft); font-size:.86rem; margin:8px 0 0; padding-inline-start:32px}
+  .meta .over{color:var(--red); font-weight:700}
+  .sheet-actions{display:grid; grid-template-columns:1.2fr 1fr 1fr; gap:8px; margin-top:12px}
+  .btn{border:1.5px solid var(--graphite); background:#fff; border-radius:10px; padding:10px 8px; cursor:pointer; font-weight:700; font-size:.97rem}
+  .btn:hover{background:#f1f4fa}
+  .btn.ink{background:var(--ink); color:#fff; border-color:var(--ink)}
+  .btn.ink:hover{background:var(--ink-deep)}
+  .btn.ghost{border-color:#cfd6e0}
+  .btn.small{padding:6px 12px; font-size:.9rem}
+  .next-row{display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:10px}
+  .next-row small{color:var(--soft)}
+
+  .drawer{margin-top:14px; background:#fff; border:1.5px solid #cfd6e0; border-radius:12px}
+  .drawer > summary{list-style:none; cursor:pointer; padding:12px 14px; font-weight:700; display:flex; gap:8px; align-items:baseline; flex-wrap:wrap}
+  .drawer > summary::-webkit-details-marker{display:none}
+  .drawer > summary small{font-weight:400; color:var(--soft)}
+  .drawer .in{padding:0 14px 14px}
+  .settings{display:grid; grid-template-columns:repeat(auto-fit, minmax(170px,1fr)); gap:10px}
+  .settings label{display:block; font-size:.85rem; color:var(--soft); margin-bottom:3px}
+  .settings input, .settings select, .drawer textarea{width:100%; border:1.5px solid #cfd6e0; border-radius:8px; padding:8px 10px; background:#fff}
+
+  .roster{display:flex; flex-wrap:wrap; gap:6px; margin-top:10px}
+  .rname{border:1.5px solid #cfd6e0; background:#fff; border-radius:999px; padding:4px 12px; cursor:pointer; font-size:.93rem}
+  .rname.done{border-color:#7cc99a; background:#effaf3; color:#1f6b3d}
+  .rname.done::after{content:' ✓'}
+  .rname.cur{border-color:var(--ink); background:var(--ink); color:#fff}
+
+  .saved-item{border-top:1px dashed #cfd6e0; padding:10px 0}
+  .saved-item:first-child{border-top:0}
+  .saved-item .top{display:flex; justify-content:space-between; align-items:center; gap:8px}
+  .saved-item b{font-family:var(--serif); font-size:1.05rem}
+  .saved-item .kind{font-size:.8rem; color:var(--soft); margin-inline-start:6px}
+  .saved-item p{margin:4px 0 0; white-space:pre-line; font-size:.93rem; color:#3a4150}
+  .link{border:0; background:none; color:var(--ink); cursor:pointer; font-weight:600; font-size:.88rem; padding:2px 4px}
+  .link.danger{color:var(--red)}
+  .row{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:10px}
+  .confirm{display:none; align-items:center; gap:8px; flex-wrap:wrap; margin-top:10px; font-size:.93rem}
+  .confirm.show{display:flex}
+  .empty{color:var(--soft); margin:0; font-size:.93rem}
+
+  .mbar{display:none}
+  @media (max-width:900px){
+    .mbar{display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; position:fixed; bottom:0; left:0; right:0; z-index:5; padding:8px 12px calc(8px + env(safe-area-inset-bottom)); background:rgba(251,252,254,.96); border-top:1.5px solid var(--graphite)}
+  }
+  .toast{position:fixed; bottom:86px; left:50%; transform:translate(-50%, 8px); background:var(--graphite); color:#fff; padding:9px 18px; border-radius:999px; font-size:.93rem; opacity:0; transition:opacity .18s, transform .18s; pointer-events:none; z-index:9}
+  .toast.show{opacity:1; transform:translate(-50%,0)}
   .hidden{display:none !important}
-  .bar{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.96);backdrop-filter:blur(6px);border-top:1px solid var(--line);padding:8px 10px calc(8px + env(safe-area-inset-bottom));z-index:5}
-  .bar .in{max-width:940px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px}
-  .btn{border:0;border-radius:11px;padding:11px 8px;font:inherit;font-weight:700;cursor:pointer;font-size:.98rem}
-  .btn.primary{background:#16a34a;color:#fff}
-  .btn.dark{background:#334155;color:#fff}
-  .btn.light{background:#e2e8f0;color:var(--ink)}
-  .btn.blue{background:var(--accent);color:#fff}
-  .btn.small{padding:7px 12px;font-size:.88rem}
-  .two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  .out{background:#eefaf5;border-color:#b7e4d2}
-  textarea#out{min-height:230px;line-height:1.65;resize:vertical;font-size:1rem}
-  .meta{display:flex;justify-content:space-between;color:var(--muted);font-size:.82rem;margin-top:4px;gap:8px;flex-wrap:wrap}
-  .meta .over{color:#b91c1c;font-weight:700}
-  .toast{position:fixed;bottom:84px;left:50%;transform:translateX(-50%);background:#111827;color:#fff;padding:8px 16px;border-radius:999px;font-size:.9rem;opacity:0;transition:opacity .2s;pointer-events:none;z-index:9}
-  .toast.show{opacity:1}
-  .list-item{border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-bottom:6px;background:#fafbfc}
-  .list-item .top{display:flex;justify-content:space-between;align-items:center;gap:6px}
-  .tag{font-size:.72rem;background:#e2e8f0;border-radius:999px;padding:1px 8px;margin-inline-start:6px;font-weight:400}
-  .list-item p{margin:4px 0 0;font-size:.86rem;color:#374151;white-space:pre-line}
-  .mini{border:0;background:none;color:var(--accent);cursor:pointer;font:inherit;font-size:.82rem;padding:2px 4px}
-  .mini.del{color:#b91c1c}
-  .confirm{display:none;gap:6px;align-items:center;margin-top:8px;font-size:.9rem}
-  .confirm.show{display:flex;flex-wrap:wrap}
-  .settings{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
-  footer{text-align:center;color:#9aa1ab;font-size:.75rem;margin-top:18px}
-  footer span{direction:ltr;unicode-bidi:isolate}
+  footer{max-width:1240px; margin:0 auto; padding:0 20px 110px; color:var(--faint); font-size:.82rem}
+  footer bdi{direction:ltr}
+  @media (max-width:520px){ .presets{flex-wrap:nowrap; overflow-x:auto; margin:0 -20px; padding:4px 20px 12px} .preset{flex:0 0 auto} }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <h1>מחולל נימות אישיות</h1>
-    <p>לתעודה וליום הורים · בוחרים, לוחצים, מעתיקים</p>
-  </header>
 
-  <!-- רשימת הכיתה -->
-  <details class="card" id="rosterCard">
-    <summary>👥 שמות הכיתה <small>הדביקו פעם אחת, ועוברים תלמיד אחרי תלמיד</small></summary>
-    <div class="body">
-      <textarea id="rosterInput" rows="4" placeholder="שם בכל שורה. להוספת מגדר: נ לתלמידה, ז לתלמיד. למשל:&#10;דני כהן ז&#10;נועה לוי נ"></textarea>
-      <div class="row" style="margin-top:8px">
-        <button class="btn blue small" id="rosterLoad">טען רשימה</button>
-        <button class="btn light small" id="rosterClear">נקה שמות</button>
-      </div>
-      <div class="roster" id="roster"></div>
-    </div>
-  </details>
+<header class="masthead">
+  <div>
+    <h1>ממני אליך</h1>
+    <p>נימות אישיות לתעודה וליום הורים. מסמנים, והנימה נכתבת.</p>
+  </div>
+  <div class="toggle" id="modeSeg" role="group" aria-label="סוג הנימה">
+    <button type="button" data-v="long" class="on">לתעודה</button>
+    <button type="button" data-v="short">ליום הורים</button>
+  </div>
+</header>
 
-  <div class="card">
-    <h2>1. פרטים</h2>
-    <div class="row">
-      <input type="text" id="name" placeholder="שם התלמיד/ה" autocomplete="off">
-      <div class="seg" id="genderSeg">
+<main class="layout">
+  <section class="controls">
+    <div class="who">
+      <input type="text" id="name" placeholder="שם התלמיד/ה" autocomplete="off" aria-label="שם התלמיד/ה">
+      <div class="toggle" id="genderSeg" role="group" aria-label="מגדר">
         <button type="button" data-v="m" class="on">תלמיד</button>
         <button type="button" data-v="f">תלמידה</button>
       </div>
+      <div class="len" id="lenWrap">
+        <span>אורך הנימה</span>
+        <div class="toggle" id="lenSeg" role="group" aria-label="אורך">
+          <button type="button" data-v="compact">תמציתי</button>
+          <button type="button" data-v="normal" class="on">רגיל</button>
+          <button type="button" data-v="rich">מורחב</button>
+        </div>
+      </div>
     </div>
-    <div class="seg" id="modeSeg" style="margin-top:8px">
-      <button type="button" data-v="long" class="on">📜 תעודה</button>
-      <button type="button" data-v="short">👨‍👩‍👧 יום הורים</button>
+
+    <div class="shortcuts">
+      <h3>פרופילים מוכנים<span>לוחצים, ואז מדייקים</span></h3>
+      <div class="presets" id="presets"></div>
     </div>
-    <div class="seg long-only" id="lenSeg" style="margin-top:8px">
-      <button type="button" data-v="compact">תמציתי</button>
-      <button type="button" data-v="normal" class="on">רגיל</button>
-      <button type="button" data-v="rich">מורחב</button>
+
+    <details class="group" open data-sec="traits" data-hl="yellow"><summary><h2>חוזקות ותכונות</h2><span class="note">כמה שרוצים</span><span class="count"></span><span class="caret">▾</span></summary><div class="marks" id="traits"></div></details>
+    <details class="group" open data-sec="achievement" data-hl="orange"><summary><h2>הישגים</h2><span class="note">אחד</span><span class="count"></span><span class="caret">▾</span></summary><div class="marks" id="achievement"></div></details>
+    <details class="group" open data-sec="process" data-hl="orange"><summary><h2>התהליך במחצית</h2><span class="note">אחד</span><span class="count"></span><span class="caret">▾</span></summary><div class="marks" id="process"></div></details>
+    <details class="group" data-sec="subjects" data-hl="blue"><summary><h2>תחומים בולטים</h2><span class="count"></span><span class="caret">▾</span></summary><div class="marks" id="subjects"></div></details>
+    <details class="group" data-sec="activities" data-hl="blue"><summary><h2>מעורבות</h2><span class="count"></span><span class="caret">▾</span></summary><div class="marks" id="activities"></div></details>
+    <details class="group" open data-sec="challenges" data-hl="pink"><summary><h2>מה צריך לשפר</h2><span class="count"></span><span class="caret">▾</span></summary><div class="marks" id="challenges"></div></details>
+    <details class="group" data-sec="emotional" data-hl="lilac"><summary><h2>רגשי וחברתי</h2><span class="note">ניסוח עדין ותומך</span><span class="count"></span><span class="caret">▾</span></summary><div class="marks" id="emotional"></div></details>
+    <details class="group" data-sec="attendance" data-hl="orange"><summary><h2>נוכחות</h2><span class="count"></span><span class="caret">▾</span></summary><div class="marks" id="attendance"></div></details>
+    <details class="group" open data-sec="goals" data-hl="green"><summary><h2>מסר לסיום</h2><span class="count"></span><span class="caret">▾</span></summary><div class="marks" id="goals"></div></details>
+
+    <details class="group" open><summary><h2>משפט משלך</h2><span class="caret">▾</span></summary>
+      <input type="text" id="custom" class="free" placeholder="יתווסף לנימה כמו שהוא">
+    </details>
+  </section>
+
+  <aside class="sheet-col" id="sheetCol">
+    <div class="sheet">
+      <div class="sheet-head"><b id="sheetTitle">הנימה</b><small id="sheetKind">לתעודה</small></div>
+      <textarea class="page" id="out" placeholder="סמנו תכונות, והנימה תיכתב כאן." aria-label="הנימה האישית"></textarea>
+      <div class="meta"><span id="count">0 תווים</span><span id="limitMsg"></span></div>
+      <div class="sheet-actions">
+        <button class="btn ink" id="copy">העתקה</button>
+        <button class="btn" id="again" title="אותן בחירות, ניסוח אחר">נוסח אחר</button>
+        <button class="btn" id="save">שמירה</button>
+      </div>
+      <div class="next-row">
+        <small>אפשר לערוך את הנימה ישירות על הדף</small>
+        <button class="btn ghost small" id="next">התלמיד הבא</button>
+      </div>
     </div>
-    <p class="hint" id="modeHint"></p>
-  </div>
 
-  <div class="card">
-    <h2>⚡ פרופילים מהירים <small>לחיצה ממלאת בחירות, ואז מדייקים</small></h2>
-    <div class="presets" id="presets"></div>
-  </div>
+    <details class="drawer" id="savedCard">
+      <summary>נימות שמורות <small id="listCount"></small></summary>
+      <div class="in">
+        <div id="list"></div>
+        <div class="row">
+          <button class="btn small" id="copyAll">העתקה לאקסל</button>
+          <button class="btn small" id="copyText">העתקה לוורד</button>
+          <button class="link danger" id="clearAll">מחיקת הכול</button>
+        </div>
+        <div class="confirm" id="confirmBox">
+          <span>למחוק את כל הנימות השמורות?</span>
+          <button class="btn small" id="confirmYes" style="color:var(--red)">כן, למחוק</button>
+          <button class="btn small" id="confirmNo">ביטול</button>
+        </div>
+      </div>
+    </details>
 
-  <details class="card" open data-sec="traits"><summary>2. חוזקות ותכונות <small>(אפשר כמה)</small> <span class="badge"></span></summary>
-    <div class="body"><div class="grid" id="traits"></div></div></details>
+    <details class="drawer" id="rosterCard">
+      <summary>שמות הכיתה <small>מדביקים פעם אחת ועוברים תלמיד אחרי תלמיד</small></summary>
+      <div class="in">
+        <textarea id="rosterInput" rows="4" placeholder="שם בכל שורה. נ בסוף לתלמידה, ז לתלמיד:&#10;דני כהן ז&#10;נועה לוי נ"></textarea>
+        <div class="row">
+          <button class="btn small ink" id="rosterLoad">טעינת השמות</button>
+          <button class="link danger" id="rosterClear">ניקוי</button>
+        </div>
+        <div class="roster" id="roster"></div>
+      </div>
+    </details>
 
-  <details class="card gold" open data-sec="achievement"><summary>3. הישגים לימודיים <small>(אחד)</small> <span class="badge"></span></summary>
-    <div class="body"><div class="grid" id="achievement"></div></div></details>
+    <details class="drawer" id="settingsCard">
+      <summary>הגדרות <small>חתימה, סיום, מקצוע ומגבלת תווים</small></summary>
+      <div class="in settings">
+        <div><label for="sign">חתימה</label><input type="text" id="sign" value="אריק"></div>
+        <div><label for="closing">משפט סיום בתעודה</label>
+          <select id="closing">
+            <option value="בהצלחה במחצית הבאה,">בהצלחה במחצית הבאה</option>
+            <option value="בהצלחה בהמשך השנה,">בהצלחה בהמשך השנה</option>
+            <option value="חופשה נעימה ובהצלחה בשנה הבאה,">חופשה נעימה ובהצלחה בשנה הבאה</option>
+            <option value="באהבה ובהערכה,">באהבה ובהערכה</option>
+            <option value="">בלי משפט סיום</option>
+          </select></div>
+        <div><label for="subject">מקצוע ליום הורים</label><input type="text" id="subject" placeholder="למשל: מתמטיקה"></div>
+        <div><label for="limit">מגבלת תווים (0 בלי מגבלה)</label><input type="number" id="limit" min="0" step="50" value="0"></div>
+      </div>
+    </details>
+  </aside>
+</main>
 
-  <details class="card" open data-sec="process" style="background:#fffdf3"><summary>4. תהליך במחצית <small>(אחד)</small> <span class="badge"></span></summary>
-    <div class="body"><div class="grid" id="process"></div></div></details>
+<footer>נבנה על ידי: אריק - <bdi>@mathfun.with.arik</bdi></footer>
 
-  <details class="card gold" data-sec="subjects"><summary>5. תחומים בולטים <small>(כישרונות)</small> <span class="badge"></span></summary>
-    <div class="body"><div class="grid" id="subjects"></div></div></details>
-
-  <details class="card gold" data-sec="activities"><summary>6. מעורבות ופעילויות <span class="badge"></span></summary>
-    <div class="body"><div class="grid" id="activities"></div></div></details>
-
-  <details class="card neg" open data-sec="challenges"><summary>7. נקודות לשיפור <small>(אפשר כמה)</small> <span class="badge"></span></summary>
-    <div class="body"><div class="grid" id="challenges"></div></div></details>
-
-  <details class="card emo" data-sec="emotional"><summary>8. רגשי וחברתי <small>(ניסוח רגיש ותומך)</small> <span class="badge"></span></summary>
-    <div class="body"><div class="grid" id="emotional"></div></div></details>
-
-  <details class="card" data-sec="attendance"><summary>9. נוכחות <span class="badge"></span></summary>
-    <div class="body"><div class="grid" id="attendance"></div></div></details>
-
-  <details class="card goal" open data-sec="goals"><summary>10. מסר לסיום <small>(אפשר כמה)</small> <span class="badge"></span></summary>
-    <div class="body"><div class="grid" id="goals"></div></div></details>
-
-  <div class="card">
-    <h2>11. הערה חופשית</h2>
-    <input type="text" id="custom" placeholder="משפט משלך, יתווסף כמו שהוא">
-  </div>
-
-  <details class="card" id="settingsCard">
-    <summary>⚙️ הגדרות <small>חתימה, סיום, מקצוע, מגבלת תווים</small></summary>
-    <div class="body settings">
-      <div><label class="lbl">חתימה</label><input type="text" id="sign" value="אריק"></div>
-      <div><label class="lbl">משפט סיום (תעודה)</label>
-        <select id="closing">
-          <option value="בהצלחה במחצית הבאה,">בהצלחה במחצית הבאה</option>
-          <option value="בהצלחה בהמשך השנה,">בהצלחה בהמשך השנה</option>
-          <option value="חופשה נעימה ובהצלחה בשנה הבאה,">חופשה נעימה ובהצלחה בשנה הבאה</option>
-          <option value="באהבה ובהערכה,">באהבה ובהערכה</option>
-          <option value="">ללא משפט סיום</option>
-        </select></div>
-      <div><label class="lbl">מקצוע (ליום הורים, לא חובה)</label><input type="text" id="subject" placeholder="למשל: מתמטיקה"></div>
-      <div><label class="lbl">מגבלת תווים (0 = ללא)</label><input type="number" id="limit" min="0" step="50" value="0"></div>
-    </div>
-  </details>
-
-  <div class="card out" id="outCard">
-    <h2>📝 הטקסט <small>אפשר לערוך ישירות</small></h2>
-    <textarea id="out" placeholder="בחרו רובריקות ולחצו &quot;צור נוסח&quot;."></textarea>
-    <div class="meta"><span id="count">0 תווים</span><span id="limitMsg"></span></div>
-    <div class="two" style="margin-top:10px">
-      <button class="btn light" id="save">➕ שמור לרשימה</button>
-      <button class="btn light" id="next">⏭️ תלמיד הבא</button>
-    </div>
-  </div>
-
-  <div class="card">
-    <h2>📋 נימות שמורות <small id="listCount"></small></h2>
-    <div id="list"></div>
-    <div class="two" style="margin-top:8px">
-      <button class="btn dark" id="copyAll">העתק לאקסל</button>
-      <button class="btn light" id="copyText">העתק כטקסט</button>
-    </div>
-    <div style="text-align:center;margin-top:6px"><button class="mini del" id="clearAll">מחיקת כל הרשימה</button></div>
-    <div class="confirm" id="confirmBox">
-      <span>למחוק את כל הנימות השמורות?</span>
-      <button class="btn light small" id="confirmYes" style="color:#b91c1c">כן, למחוק</button>
-      <button class="btn light small" id="confirmNo">ביטול</button>
-    </div>
-  </div>
-
-  <footer>נבנה על ידי: אריק - <span>@mathfun.with.arik</span></footer>
+<div class="mbar">
+  <button class="btn" id="mView">לנימה</button>
+  <button class="btn" id="mAgain">נוסח אחר</button>
+  <button class="btn ink" id="mCopy">העתקה</button>
 </div>
-
-<div class="bar"><div class="in">
-  <button class="btn primary" id="gen">✨ צור נוסח</button>
-  <button class="btn blue" id="again" title="אותן בחירות, ניסוח אחר">🔄 אחר</button>
-  <button class="btn dark" id="copy">📋 העתק</button>
-</div></div>
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 const traitsData = [
@@ -728,7 +789,6 @@ const PRESETS = [
 const EMPTY = () => ({ traits:[], achievement:'none', process:'none', subjects:[], activities:[], challenges:[], emotional:[], attendance:'skip', goals:[] });
 const state = Object.assign({ gender:'m', mode:'long', len:'normal' }, EMPTY());
 const $ = id => document.getElementById(id);
-const pick = arr => arr[Math.floor(Math.random()*arr.length)];
 const isM = () => state.gender === 'm';
 const g = s => resolve(s, isM());
 const joinHe = arr => arr.length <= 1 ? (arr[0]||'') : arr.slice(0,-1).join(', ') + ' ו' + arr[arr.length-1];
@@ -738,17 +798,24 @@ const store = {
   set(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
 };
 const MULTI = ['traits','subjects','activities','challenges','emotional','goals'];
+const KEYS = ['traits','achievement','process','subjects','activities','challenges','emotional','attendance','goals'];
+const OFF = { achievement:'none', process:'none', attendance:'skip' };
+const isOn = k => MULTI.includes(k) ? state[k].length > 0 : state[k] !== OFF[k];
 
-function makeChips(key, items){
+// ניסוח יציב: אותו משפט נשאר עד שלוחצים "נוסח אחר"
+let seeds = {};
+const pick = (key, arr) => { if (!(key in seeds)) seeds[key] = Math.floor(Math.random()*9973); return arr[seeds[key] % arr.length]; };
+
+function makeMarks(key, items){
   const box = $(key); box.innerHTML = '';
   const multi = MULTI.includes(key);
   items.forEach(it => {
     const b = document.createElement('button');
-    b.type = 'button'; b.className = 'chip'; b.textContent = it.label; b.dataset.id = it.id;
+    b.type = 'button'; b.className = 'mark'; b.textContent = it.label; b.dataset.id = it.id;
     b.addEventListener('click', () => {
       if (multi){ const i = state[key].indexOf(it.id); i >= 0 ? state[key].splice(i,1) : state[key].push(it.id); }
-      else state[key] = it.id;
-      syncKey(key);
+      else state[key] = state[key] === it.id ? OFF[key] : it.id;   // לחיצה נוספת מבטלת
+      syncKey(key); render();
     });
     box.appendChild(b);
   });
@@ -756,85 +823,70 @@ function makeChips(key, items){
 }
 function syncKey(key){
   const multi = MULTI.includes(key);
-  $(key).querySelectorAll('.chip').forEach(c => c.classList.toggle('on', multi ? state[key].includes(c.dataset.id) : state[key] === c.dataset.id));
-  const sec = document.querySelector(`[data-sec="${key}"] .badge`);
-  if (sec){
-    const n = multi ? state[key].length : (['none','skip'].includes(state[key]) ? 0 : 1);
-    sec.textContent = n; sec.classList.toggle('show', n > 0);
-  }
+  $(key).querySelectorAll('.mark').forEach(c => {
+    const on = multi ? state[key].includes(c.dataset.id) : state[key] === c.dataset.id;
+    c.classList.toggle('on', on); c.setAttribute('aria-pressed', on);
+  });
+  const cnt = document.querySelector(`[data-sec="${key}"] .count`);
+  if (cnt){ const n = multi ? state[key].length : (isOn(key) ? 1 : 0); cnt.textContent = n ? n : ''; }
 }
-const KEYS = ['traits','achievement','process','subjects','activities','challenges','emotional','attendance','goals'];
 const syncAll = () => KEYS.forEach(syncKey);
 
-function seg(id, key, after){
-  $(id).querySelectorAll('button').forEach(b => b.addEventListener('click', () => setSeg(id, key, b.dataset.v, after)));
-}
+function seg(id, key, after){ $(id).querySelectorAll('button').forEach(b => b.addEventListener('click', () => setSeg(id, key, b.dataset.v, after))); }
 function setSeg(id, key, v, after){
   state[key] = v;
-  $(id).querySelectorAll('button').forEach(x => x.classList.toggle('on', x.dataset.v === v));
+  $(id).querySelectorAll('button').forEach(x => { x.classList.toggle('on', x.dataset.v === v); x.setAttribute('aria-pressed', x.dataset.v === v); });
   if (after) after();
 }
-
 function updateModeUI(){
   const long = state.mode === 'long';
-  document.querySelectorAll('.long-only').forEach(el => el.classList.toggle('hidden', !long));
-  const lenTxt = { compact:'תמציתי: עד 2 תכונות, משפט שיפור אחד ומסר אחד.', normal:'רגיל: כל מה שנבחר.', rich:'מורחב: כל מה שנבחר, עם משפט פתיחה ואיחול אישי.' };
-  $('modeHint').textContent = long
-    ? 'תעודה: פנייה אישית בגוף שני, עם פתיחה וחתימה. ' + lenTxt[state.len]
-    : 'יום הורים: 2–5 משפטים בגוף שלישי. עד 4 תכונות ועד 2 מסרים לסיום.';
+  $('lenWrap').classList.toggle('hidden', !long);
+  $('sheetKind').textContent = long ? 'לתעודה, פנייה אישית' : 'ליום הורים, בגוף שלישי';
 }
 
 const nameVal = () => $('name').value.trim();
 const custom = () => { const c = $('custom').value.trim(); return c ? (/[.!?]$/.test(c) ? c : c + '.') : ''; };
-const listSentence = (tpls, items) => g(pick(tpls)).replace('{list}', joinHe(items.map(i => i.b)));
+const listSentence = (key, tpls, items) => g(pick(key, tpls)).replace('{list}', joinHe(items.map(i => i.b)));
+const hasAny = () => !!(nameVal() || custom() || KEYS.some(isOn));
 
 function buildLong(){
   const m = isM(), name = nameVal(), L = state.len;
   const cap = (arr, n) => L === 'compact' ? arr.slice(0, n) : arr;
   const lines = [];
+  lines.push(name ? pick('greet', [`${name} ${m?'היקר':'היקרה'},`, `ל${name} ${m?'היקר':'היקרה'},`, `${name} ${m?'יקר':'יקרה'},`])
+                  : (m ? 'תלמיד יקר,' : 'תלמידה יקרה,'));
+  if (L === 'rich') lines.push(g(pick('open', OPENINGS)));
 
-  const greet = name ? pick([`${name} ${m?'היקר':'היקרה'},`, `ל${name} ${m?'היקר':'היקרה'},`, `${name} ${m?'יקר':'יקרה'},`])
-                     : (m ? 'תלמיד יקר,' : 'תלמידה יקרה,');
-  lines.push(greet);
-  if (L === 'rich') lines.push(g(pick(OPENINGS)));
-
-  // חוזקות
-  const strong = cap(state.traits, 2).map(id => { const d = byId(traitsData,id); return pick(m ? d.m : d.f); });
+  const strong = cap(state.traits, 2).map(id => { const d = byId(traitsData,id); return pick('t:'+id, m ? d.m : d.f); });
   const subj = state.subjects.map(id => byId(subjectsData,id));
-  if (subj.length && L !== 'compact') strong.push(listSentence(SUBJECT_LONG, subj));
+  if (subj.length && L !== 'compact') strong.push(listSentence('subj', SUBJECT_LONG, subj));
   const acts = state.activities.map(id => byId(activitiesData,id));
-  if (acts.length && L !== 'compact') strong.push(listSentence(ACT_LONG, acts));
+  if (acts.length && L !== 'compact') strong.push(listSentence('act', ACT_LONG, acts));
   if (strong.length) lines.push(strong.join(' '));
 
-  // הישגים ותהליך
   const prog = [];
   const ach = byId(achievementData, state.achievement);
-  if (ach && ach.long) prog.push(g(pick(ach.long)));
-  if (state.process !== 'none'){ const p = byId(processData, state.process); prog.push(pick(m ? p.m : p.f)); }
+  if (ach && ach.long) prog.push(g(pick('a:'+ach.id, ach.long)));
+  if (state.process !== 'none'){ const p = byId(processData, state.process); prog.push(pick('p:'+p.id, m ? p.m : p.f)); }
   const att = byId(attendanceData, state.attendance);
-  const posAtt = att && att.short;
-  if (posAtt) prog.push(g(att.long));
+  if (att && att.short) prog.push(g(att.long));
   if (prog.length) lines.push(prog.join(' '));
 
-  // לשיפור
-  const neg = cap(state.challenges, 1).map(id => g(pick(byId(challengesData,id).long)));
+  const neg = cap(state.challenges, 1).map(id => g(pick('c:'+id, byId(challengesData,id).long)));
   if (att && att.phrases) neg.push(g(att.long));
   if (neg.length){
     if ((strong.length || prog.length) && !/^לצערי/.test(neg[0])) neg[0] = 'יחד עם זאת, ' + neg[0];
     lines.push(neg.join(' '));
   }
-
-  // רגשי
-  const emo = cap(state.emotional, 1).map(id => g(pick(byId(emotionalData,id).long)));
+  const emo = cap(state.emotional, 1).map(id => g(pick('e:'+id, byId(emotionalData,id).long)));
   if (emo.length) lines.push(emo.join(' '));
 
   if (lines.length === (L === 'rich' ? 2 : 1))
     lines.push(m ? 'הנך נער נפלא, ונעים לראות אותך בכיתה.' : 'הינך נערה נפלאה, ונעים לראות אותך בכיתה.');
-
   const c = custom(); if (c) lines.push(c);
 
-  const gl = cap(state.goals, 1).map(id => { const d = byId(goalsData,id); return pick(m ? d.m : d.f); });
-  if (L === 'rich') gl.push(g(pick(WISHES)));
+  const gl = cap(state.goals, 1).map(id => { const d = byId(goalsData,id); return pick('g:'+id, m ? d.m : d.f); });
+  if (L === 'rich') gl.push(g(pick('wish', WISHES)));
   lines.push(gl.length ? gl.join(' ') : 'אני מאמין בך.');
 
   const end = [$('closing').value, $('sign').value.trim()].filter(Boolean).join('\n');
@@ -848,17 +900,16 @@ function buildShort(){
   const adjs = state.traits.slice(0,4).map(id => g(TRAIT_ADJ[id] || '')).filter(Boolean);
   if (adjs.length){
     out.push(name
-      ? pick([`${name} ${g('{תלמיד|תלמידה}')} ${joinHe(adjs)}.`, `${name} ${g('{הוא תלמיד|היא תלמידה}')} ${joinHe(adjs)}.`])
+      ? pick('sopen', [`${name} ${g('{תלמיד|תלמידה}')} ${joinHe(adjs)}.`, `${name} ${g('{הוא תלמיד|היא תלמידה}')} ${joinHe(adjs)}.`])
       : `${g('{הוא תלמיד|היא תלמידה}')} ${joinHe(adjs)}.`);
   }
   const subj = state.subjects.map(id => byId(subjectsData,id));
-  if (subj.length) out.push(listSentence(SUBJECT_SHORT, subj));
+  if (subj.length) out.push(listSentence('ssubj', SUBJECT_SHORT, subj));
   const ach = byId(achievementData, state.achievement);
-  if (ach && ach.short) out.push(g(pick(ach.short)));
-  if (state.process !== 'none' && PROCESS_SHORT[state.process]) out.push(g(pick(PROCESS_SHORT[state.process])));
+  if (ach && ach.short) out.push(g(pick('sa:'+ach.id, ach.short)));
+  if (state.process !== 'none' && PROCESS_SHORT[state.process]) out.push(g(pick('sp:'+state.process, PROCESS_SHORT[state.process])));
   const acts = state.activities.map(id => byId(activitiesData,id));
-  if (acts.length) out.push(listSentence(ACT_SHORT, acts));
-
+  if (acts.length) out.push(listSentence('sact', ACT_SHORT, acts));
   const att = byId(attendanceData, state.attendance);
   if (att && att.short) out.push(g(att.short));
 
@@ -866,10 +917,9 @@ function buildShort(){
   if (att && att.phrases) phrases.push(...att.phrases);
   if (phrases.length){
     const pre = out.length ? 'עם זאת, ' : '';
-    out.push(pre + g(pick(['{עליו|עליה} להקפיד יותר על ','חשוב {שיקפיד|שתקפיד} יותר על ','נדרש שיפור ב'])) + joinHe(phrases) + '.');
+    out.push(pre + g(pick('sneg', ['{עליו|עליה} להקפיד יותר על ','חשוב {שיקפיד|שתקפיד} יותר על '])) + joinHe(phrases) + '.');
   }
-  state.emotional.forEach(id => out.push(g(pick(byId(emotionalData,id).short))));
-
+  state.emotional.forEach(id => out.push(g(pick('se:'+id, byId(emotionalData,id).short))));
   if (!out.length) out.push(`${name || g('{הוא|היא}')} ${g('{תלמיד נעים, ונעים לראות אותו בכיתה|תלמידה נעימה, ונעים לראות אותה בכיתה}')}.`);
   const c = custom(); if (c) out.push(c);
   state.goals.slice(0,2).forEach(id => { if (GOAL_SHORT[id]) out.push(g(GOAL_SHORT[id])); });
@@ -880,21 +930,22 @@ function buildShort(){
   return text;
 }
 
-function generate(){
-  $('out').value = state.mode === 'long' ? buildLong() : buildShort();
+function render(){
+  $('out').value = hasAny() ? (state.mode === 'long' ? buildLong() : buildShort()) : '';
+  $('sheetTitle').textContent = nameVal() ? `הנימה של ${nameVal()}` : 'הנימה';
   updateCount();
-  if (window.innerWidth < 800) $('outCard').scrollIntoView({ behavior:'smooth', block:'start' });
 }
+function reroll(){ seeds = {}; render(); }
 function updateCount(){
   const t = $('out').value, lim = +$('limit').value || 0;
   const words = t.trim() ? t.trim().split(/\s+/).length : 0;
-  $('count').textContent = `${t.length} תווים · ${words} מילים`;
+  $('count').textContent = `${t.length} תווים, ${words} מילים`;
   $('count').classList.toggle('over', lim > 0 && t.length > lim);
-  $('limitMsg').textContent = lim > 0 ? (t.length > lim ? `חריגה של ${t.length - lim} תווים. נסו "תמציתי".` : `נשארו ${lim - t.length} תווים`) : '';
+  $('limitMsg').textContent = lim > 0 ? (t.length > lim ? `חריגה של ${t.length - lim} תווים. אפשר לעבור לתמציתי.` : `נשארו ${lim - t.length} תווים`) : '';
 }
 function toast(msg){
   const t = $('toast'); t.textContent = msg; t.classList.add('show');
-  clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), 1700);
+  clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), 1800);
 }
 async function copyText(text){
   try { await navigator.clipboard.writeText(text); return true; }
@@ -905,19 +956,23 @@ async function copyText(text){
     ta.remove(); return ok;
   }
 }
-
-// ===== פרופילים =====
-function applyPreset(p){
-  Object.assign(state, EMPTY(), JSON.parse(JSON.stringify(p.s)));
-  syncAll();
-  KEYS.forEach(k => { if (MULTI.includes(k) ? state[k].length : !['none','skip'].includes(state[k])) { const d = document.querySelector(`[data-sec="${k}"]`); if (d) d.open = true; } });
-  generate();
-  toast('הפרופיל הוחל. אפשר לדייק ולייצר שוב');
+async function copyCurrent(){
+  if (!$('out').value.trim()) { toast('אין עדיין נימה להעתקה'); return; }
+  toast(await copyText($('out').value) ? 'הנימה הועתקה' : 'ההעתקה לא עבדה. סמנו את הטקסט והעתיקו ידנית');
 }
 
-// ===== שמות הכיתה =====
-let roster = store.get('nima_roster', []);   // [{name, g}]
+function applyPreset(p){
+  Object.assign(state, EMPTY(), JSON.parse(JSON.stringify(p.s)));
+  seeds = {};
+  syncAll();
+  KEYS.forEach(k => { if (isOn(k)) { const d = document.querySelector(`[data-sec="${k}"]`); if (d) d.open = true; } });
+  render();
+}
+
+let roster = store.get('nima_roster', []);
 let curIdx = -1;
+let saved = store.get('nima_list', []);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function parseRoster(txt){
   return txt.split(/\n/).map(l => l.trim()).filter(Boolean).map(l => {
     let gg = null;
@@ -927,122 +982,114 @@ function parseRoster(txt){
   });
 }
 function renderRoster(){
-  const doneNames = new Set(saved.map(s => s.name));
-  $('roster').innerHTML = roster.map((r,i) =>
-    `<button class="rname${doneNames.has(r.name)?' done':''}${i===curIdx?' cur':''}" data-i="${i}">${esc(r.name)}${r.g?`<span class="gx">${r.g==='f'?'♀':'♂'}</span>`:''}</button>`).join('');
+  const done = new Set(saved.map(s => s.name));
+  $('roster').innerHTML = roster.map((r,i) => `<button class="rname${done.has(r.name)?' done':''}${i===curIdx?' cur':''}" data-i="${i}">${esc(r.name)}</button>`).join('');
   $('roster').querySelectorAll('.rname').forEach(b => b.addEventListener('click', () => loadStudent(+b.dataset.i)));
 }
 function loadStudent(i){
   const r = roster[i]; if (!r) return;
-  curIdx = i;
-  resetSelections();
+  curIdx = i; resetSelections();
   $('name').value = r.name;
   if (r.g) setSeg('genderSeg','gender', r.g);
-  renderRoster();
-  window.scrollTo({ top: $('name').getBoundingClientRect().top + window.scrollY - 80, behavior:'smooth' });
+  renderRoster(); render();
+  window.scrollTo({ top: 0 });
 }
-
-// ===== נימות שמורות =====
-let saved = store.get('nima_list', []);
-const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function renderList(){
   $('listCount').textContent = saved.length ? `(${saved.length})` : '';
   $('list').innerHTML = saved.length ? saved.map((s,i) => `
-    <div class="list-item">
-      <div class="top"><b>${esc(s.name || 'ללא שם')}<span class="tag">${s.mode==='long'?'תעודה':'יום הורים'}</span></b>
-      <span><button class="mini" data-cp="${i}">העתק</button><button class="mini del" data-del="${i}">מחק</button></span></div>
+    <div class="saved-item">
+      <div class="top"><span><b>${esc(s.name || 'בלי שם')}</b><span class="kind">${s.mode==='long'?'תעודה':'יום הורים'}</span></span>
+      <span><button class="link" data-cp="${i}">העתקה</button><button class="link danger" data-del="${i}">מחיקה</button></span></div>
       <p>${esc(s.text)}</p>
-    </div>`).join('') : '<p style="color:var(--muted);margin:0;font-size:.9rem">עדיין אין נימות שמורות. אחרי שנוצר נוסח, לחצו "שמור לרשימה".</p>';
+    </div>`).join('') : '<p class="empty">כל נימה ששומרים מופיעה כאן, ובסוף מעתיקים הכול בבת אחת.</p>';
   $('list').querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', () => { saved.splice(+b.dataset.del,1); store.set('nima_list', saved); renderList(); renderRoster(); }));
-  $('list').querySelectorAll('[data-cp]').forEach(b => b.addEventListener('click', async () => toast(await copyText(saved[+b.dataset.cp].text) ? 'הועתק ✓' : 'ההעתקה נכשלה')));
+  $('list').querySelectorAll('[data-cp]').forEach(b => b.addEventListener('click', async () => toast(await copyText(saved[+b.dataset.cp].text) ? 'הנימה הועתקה' : 'ההעתקה לא עבדה')));
 }
-
 function resetSelections(){
-  Object.assign(state, EMPTY());
-  $('name').value = ''; $('custom').value = ''; $('out').value = '';
-  syncAll(); updateCount();
+  Object.assign(state, EMPTY()); seeds = {};
+  $('name').value = ''; $('custom').value = '';
+  syncAll(); render();
 }
 function nextStudent(){
   if (roster.length){
-    const doneNames = new Set(saved.map(s => s.name));
-    let n = roster.findIndex((r,i) => i > curIdx && !doneNames.has(r.name));
-    if (n < 0) n = roster.findIndex(r => !doneNames.has(r.name));
+    const done = new Set(saved.map(s => s.name));
+    let n = roster.findIndex((r,i) => i > curIdx && !done.has(r.name));
+    if (n < 0) n = roster.findIndex(r => !done.has(r.name));
     if (n >= 0){ loadStudent(n); return; }
-    toast('כל התלמידים ברשימה סומנו ✓');
+    toast('עברת על כל הכיתה');
   }
   curIdx = -1; resetSelections(); renderRoster();
-  window.scrollTo({ top:0, behavior:'smooth' });
+  window.scrollTo({ top:0 }); $('name').focus();
 }
 
 // ===== הפעלה =====
-makeChips('traits', traitsData);
-makeChips('achievement', achievementData);
-makeChips('process', [{id:'none',label:'ללא'}, ...processData.filter(p => p.id !== 'none')]);
-makeChips('subjects', subjectsData);
-makeChips('activities', activitiesData);
-makeChips('challenges', challengesData);
-makeChips('emotional', emotionalData);
-makeChips('attendance', attendanceData);
-makeChips('goals', goalsData);
+makeMarks('traits', traitsData);
+makeMarks('achievement', achievementData.filter(a => a.id !== 'none'));
+makeMarks('process', processData.filter(p => p.id !== 'none'));
+makeMarks('subjects', subjectsData);
+makeMarks('activities', activitiesData);
+makeMarks('challenges', challengesData);
+makeMarks('emotional', emotionalData);
+makeMarks('attendance', attendanceData.filter(a => a.id !== 'skip'));
+makeMarks('goals', goalsData);
 
-$('presets').innerHTML = '';
-PRESETS.forEach(p => { const b = document.createElement('button'); b.className = 'preset'; b.textContent = p.label; b.onclick = () => applyPreset(p); $('presets').appendChild(b); });
+PRESETS.forEach(p => { const b = document.createElement('button'); b.type='button'; b.className = 'preset'; b.textContent = p.label.replace(/^\S+\s/, ''); b.onclick = () => applyPreset(p); $('presets').appendChild(b); });
 
-seg('genderSeg', 'gender');
-seg('modeSeg', 'mode', () => { updateModeUI(); store.set('nima_mode', state.mode); });
-seg('lenSeg', 'len', () => { updateModeUI(); store.set('nima_len', state.len); });
+seg('genderSeg', 'gender', render);
+seg('modeSeg', 'mode', () => { updateModeUI(); store.set('nima_mode', state.mode); render(); });
+seg('lenSeg', 'len', () => { store.set('nima_len', state.len); render(); });
 setSeg('modeSeg','mode', store.get('nima_mode','long'));
 setSeg('lenSeg','len', store.get('nima_len','normal'));
 updateModeUI();
 
 ['sign','subject','limit','closing'].forEach(id => {
   const v = store.get('nima_'+id, null); if (v !== null) $(id).value = v;
-  $(id).addEventListener('input', () => { store.set('nima_'+id, $(id).value); if (id === 'limit') updateCount(); });
-  $(id).addEventListener('change', () => store.set('nima_'+id, $(id).value));
+  const h = () => { store.set('nima_'+id, $(id).value); render(); };
+  $(id).addEventListener('input', h); $(id).addEventListener('change', h);
 });
-
-$('gen').addEventListener('click', generate);
-$('again').addEventListener('click', generate);
+$('name').addEventListener('input', render);
+$('custom').addEventListener('input', render);
 $('out').addEventListener('input', updateCount);
-$('copy').addEventListener('click', async () => {
-  if (!$('out').value.trim()) { toast('אין עדיין טקסט להעתקה'); return; }
-  toast(await copyText($('out').value) ? 'הועתק ✓' : 'ההעתקה נכשלה, סמנו והעתיקו ידנית');
-});
+
+$('again').addEventListener('click', reroll);
+$('mAgain').addEventListener('click', reroll);
+$('copy').addEventListener('click', copyCurrent);
+$('mCopy').addEventListener('click', copyCurrent);
+$('mView').addEventListener('click', () => $('sheetCol').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }));
 $('save').addEventListener('click', () => {
   const text = $('out').value.trim();
-  if (!text) { toast('צרו נוסח לפני השמירה'); return; }
+  if (!text) { toast('אין עדיין נימה לשמירה'); return; }
   const name = nameVal();
-  const existing = name ? saved.findIndex(s => s.name === name && s.mode === state.mode) : -1;
-  if (existing >= 0) saved[existing].text = text; else saved.push({ name, mode: state.mode, text });
+  const ex = name ? saved.findIndex(s => s.name === name && s.mode === state.mode) : -1;
+  if (ex >= 0) saved[ex].text = text; else saved.push({ name, mode: state.mode, text });
   store.set('nima_list', saved); renderList(); renderRoster();
-  toast(existing >= 0 ? 'עודכן ✓' : 'נשמר ✓');
+  toast(ex >= 0 ? 'הנימה עודכנה' : 'הנימה נשמרה');
 });
 $('next').addEventListener('click', nextStudent);
 $('copyAll').addEventListener('click', async () => {
-  if (!saved.length) { toast('הרשימה ריקה'); return; }
+  if (!saved.length) { toast('אין עדיין נימות שמורות'); return; }
   const q = s => '"' + s.replace(/"/g,'""') + '"';
   const tsv = ['שם\tסוג\tנימה אישית', ...saved.map(s => `${s.name}\t${s.mode==='long'?'תעודה':'יום הורים'}\t${q(s.text)}`)].join('\n');
-  toast(await copyText(tsv) ? 'הועתק. הדביקו באקסל ✓' : 'ההעתקה נכשלה');
+  toast(await copyText(tsv) ? 'הועתק. אפשר להדביק באקסל' : 'ההעתקה לא עבדה');
 });
 $('copyText').addEventListener('click', async () => {
-  if (!saved.length) { toast('הרשימה ריקה'); return; }
-  const txt = saved.map(s => `${s.name || 'ללא שם'}\n${s.text}`).join('\n\n———\n\n');
-  toast(await copyText(txt) ? 'הועתק ✓ אפשר להדביק בוורד' : 'ההעתקה נכשלה');
+  if (!saved.length) { toast('אין עדיין נימות שמורות'); return; }
+  toast(await copyText(saved.map(s => `${s.name || 'בלי שם'}\n${s.text}`).join('\n\n')) ? 'הועתק. אפשר להדביק בוורד' : 'ההעתקה לא עבדה');
 });
 $('clearAll').addEventListener('click', () => $('confirmBox').classList.add('show'));
 $('confirmNo').addEventListener('click', () => $('confirmBox').classList.remove('show'));
-$('confirmYes').addEventListener('click', () => { saved = []; store.set('nima_list', saved); renderList(); renderRoster(); $('confirmBox').classList.remove('show'); toast('הרשימה נמחקה'); });
-
+$('confirmYes').addEventListener('click', () => { saved = []; store.set('nima_list', saved); renderList(); renderRoster(); $('confirmBox').classList.remove('show'); toast('כל הנימות נמחקו'); });
 $('rosterLoad').addEventListener('click', () => {
   const r = parseRoster($('rosterInput').value);
   if (!r.length) { toast('הדביקו שמות, שם בכל שורה'); return; }
-  roster = r; store.set('nima_roster', roster); curIdx = -1; renderRoster(); toast(`נטענו ${r.length} תלמידים`);
-  loadStudent(0);
+  roster = r; store.set('nima_roster', roster); toast(`נטענו ${r.length} שמות`); loadStudent(0);
 });
-$('rosterClear').addEventListener('click', () => { roster = []; store.set('nima_roster', roster); curIdx = -1; $('rosterInput').value=''; renderRoster(); });
+$('rosterClear').addEventListener('click', () => { roster = []; store.set('nima_roster', roster); curIdx = -1; $('rosterInput').value = ''; renderRoster(); });
 if (roster.length){ $('rosterInput').value = roster.map(r => r.name + (r.g ? (r.g==='f'?' נ':' ז') : '')).join('\n'); $('rosterCard').open = true; }
+if (saved.length) $('savedCard').open = true;
 
-renderList(); renderRoster();
+renderList(); renderRoster(); render();
+
 </script>
 </body>
 </html>

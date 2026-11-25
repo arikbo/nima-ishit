@@ -1174,7 +1174,7 @@ function setSeg(id, key, v, after){
 function updateModeUI(){
   const long = state.mode === 'long';
   $('lenWrap').classList.toggle('hidden', !long);
-  $('sheetKind').textContent = long ? 'לתעודה' : 'ליום הורים, קצר';
+  $('sheetKind').textContent = long ? 'לתעודה' : 'ליום הורים, 2–3 משפטים';
 }
 
 const curSub = () => SUBJECTS.find(s => s.id === state.subject);
@@ -1245,48 +1245,47 @@ function buildLong(){
 }
 
 function buildShort(){
-  // יום הורים: קצר, חם, בפנייה ישירה לתלמיד/ה
-  const m = isM(), name = nameVal();
-  const out = [];
+  // יום הורים: 2–3 משפטים בלבד, חם ובפנייה ישירה
+  const m = isM(), name = nameVal(), sub = curSub();
+  const first = s => { const i = s.search(/[.!?](\s|$)/); return i > 0 ? s.slice(0, i+1) : s; };
   const greet = name ? pick('sgreet', [`${name} ${m?'היקר':'היקרה'},`, `${name} ${m?'יקר':'יקרה'},`]) : (m ? 'תלמיד יקר,' : 'תלמידה יקרה,');
-  const adjs = state.traits.slice(0,3).map(id => g(TRAIT_ADJ[id] || '')).filter(Boolean);
-  if (adjs.length){
-    out.push(g(pick('sopen', [
-      '{אתה תלמיד|את תלמידה} {list}, ונעים מאוד ללמד אותך.',
-      '{אתה תלמיד|את תלמידה} {list}, ותענוג לראות אותך בכיתה.',
-      'אני שמח ללמד {תלמיד|תלמידה} {list} כמוך.',
-      'ראיתי בך במחצית הזו {תלמיד|תלמידה} {list}.',
-      'כיף לי ללמד {תלמיד|תלמידה} {list} כמוך.'
-    ])).replace('{list}', joinHe(adjs)));
-  }
-  const sub = curSub();
-  if (sub) state.subjS.slice(0,2).map(id => subItem('sItems', id)).filter(Boolean).forEach(it => out.push(g(pick('ss:'+it.id, it.arr))));
-  const subj = state.subjects.map(id => byId(subjectsData,id));
-  if (subj.length) out.push(listSentence('ssubj', SUBJECT_LONG, subj));
-  const ach = byId(achievementData, state.achievement);
-  if (ach && ach.long) out.push(g(pick('a:'+ach.id, ach.long)));
-  if (state.process !== 'none'){ const p = byId(processData, state.process); out.push(pick('p:'+p.id, m ? p.m : p.f)); }
-  const acts = state.activities.map(id => byId(activitiesData,id));
-  if (acts.length) out.push(listSentence('act', ACT_LONG, acts));
-  const att = byId(attendanceData, state.attendance);
-  if (att && att.short) out.push(g(att.long));
+  const out = [];
 
-  const phrases = [...(sub ? state.subjI.map(id => subItem('iItems', id)).filter(Boolean).map(it => it.phrase) : []), ...state.challenges.map(id => byId(challengesData,id).phrase)];
-  if (att && att.phrases) phrases.push(...att.phrases);
+  // משפט 1: התכונות (עד 3)
+  const adjs = state.traits.slice(0,3).map(id => g(TRAIT_ADJ[id] || '')).filter(Boolean);
+  if (adjs.length) out.push(g(pick('sopen', [
+    '{אתה תלמיד|את תלמידה} {list}, ונעים מאוד ללמד אותך.',
+    '{אתה תלמיד|את תלמידה} {list}, ותענוג לראות אותך בכיתה.',
+    'כיף לי ללמד {תלמיד|תלמידה} {list} כמוך.'
+  ])).replace('{list}', joinHe(adjs)));
+
+  // משפט 2: פרט חיובי אחד (מקצוע, הישגים או תהליך)
+  const sS = sub ? state.subjS.map(id => subItem('sItems', id)).filter(Boolean)[0] : null;
+  const ach = byId(achievementData, state.achievement);
+  const proc = state.process !== 'none' ? byId(processData, state.process) : null;
+  const pos = sS ? g(pick('ss:'+sS.id, sS.arr)) : (proc ? pick('p:'+proc.id, m ? proc.m : proc.f) : (ach && ach.long ? g(pick('a:'+ach.id, ach.long)) : ''));
+  if (pos) out.push(first(pos));
+
+  // משפט 3: לשיפור (עד 2 נקודות), ואם אין – רגשי או מסר
+  const att = byId(attendanceData, state.attendance);
+  const phrases = [...(sub ? state.subjI.map(id => subItem('iItems', id)).filter(Boolean).map(it => it.phrase) : []),
+                   ...state.challenges.map(id => byId(challengesData,id).phrase), ...((att && att.phrases) || [])].slice(0,2);
   if (phrases.length){
-    const pre = out.length ? pick('spre', ['יחד עם זאת, ', 'לצד זאת, ', 'עם זאת, ']) : '';
-    out.push(pre + g(pick('sneg', [
-      'כדאי לך להקפיד יותר על {list}, ואני בטוח {שתצליח|שתצליחי}.',
-      'אשמח לראות אותך {מקפיד|מקפידה} יותר על {list}. אני יודע {שאתה יכול|שאת יכולה}.',
-      'המשימה שלך להמשך היא להקפיד יותר על {list}, ואני כאן כדי לעזור.',
-      'כדי להמשיך ולהתקדם, חשוב {שתקפיד|שתקפידי} יותר על {list}.',
-      'יש לי בקשה קטנה: {הקפד|הקפידי} יותר על {list}. אני סומך עליך.'
-    ])).replace('{list}', joinHe(phrases)));
+    const tpl = out.length
+      ? pick('sneg', ['עם זאת, כדאי לך להקפיד יותר על {list}.', 'כדי להמשיך להתקדם, {הקפד|הקפידי} יותר על {list}.', 'יחד עם זאת, חשוב {שתקפיד|שתקפידי} יותר על {list}.'])
+      : pick('sneg0', ['כדאי לך להקפיד יותר על {list}, ואני בטוח {שתצליח|שתצליחי}.', '{הקפד|הקפידי} יותר על {list}, ואני כאן כדי לעזור.']);
+    out.push(g(tpl).replace('{list}', joinHe(phrases)));
+  } else if (state.emotional.length){
+    out.push(first(g(pick('e:'+state.emotional[0], byId(emotionalData, state.emotional[0]).long))));
   }
-  state.emotional.slice(0,1).forEach(id => out.push(g(pick('e:'+id, byId(emotionalData,id).long))));
-  const c = custom(); if (c) out.push(c);
-  const gl = state.goals.slice(0,1).map(id => { const d = byId(goalsData,id); return pick('g:'+id, m ? d.m : d.f); });
-  out.push(gl.length ? gl[0] : g(pick('sbelieve', ['אני מאמין בך.', 'אני גאה בך ומאמין בך.', 'אני בטוח שעוד נכונו לך הצלחות רבות.', '{המשך|המשיכי} כך, אני מאמין בך.', 'מחכה לראות אותך {ממשיך|ממשיכה} לצמוח.'])));
+
+  const c = custom();
+  if (out.length < 3 && !c){
+    const gid = state.goals[0];
+    out.push(gid ? first(pick('g:'+gid, m ? byId(goalsData,gid).m : byId(goalsData,gid).f))
+                 : g(pick('sbelieve', ['אני מאמין בך.', 'אני גאה בך ומאמין בך.', '{המשך|המשיכי} כך, אני מאמין בך.'])));
+  }
+  if (c) out.push(c);
 
   const body = (sub ? `${sub.pre}, ` + out[0] : out[0]) + (out.length > 1 ? ' ' + out.slice(1).join(' ') : '');
   return greet + '\n' + body;

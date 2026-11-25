@@ -97,6 +97,10 @@
   [data-hl="green"]{--dot:var(--c-sage)} [data-hl="green"] .mark{--bgc:var(--c-sage); --fgc:var(--c-sage-ink)}
   [data-hl="plain"]{--dot:var(--line)}
 
+  .subj-sel{border:1.5px solid var(--line); border-radius:999px; padding:6px 12px; background:#fff; font-weight:600; color:var(--berry-deep)}
+  .sublabel{margin:4px 0 6px; font-size:.86rem; color:var(--soft); font-weight:600}
+  .sublabel + .marks{margin-bottom:8px}
+  .subj-neg .mark{--bgc:var(--c-rose); --fgc:var(--c-rose-ink)}
   .free{width:100%; background:#fff; border:1.5px solid var(--line); border-radius:14px; padding:10px 14px}
   .free:focus{border-color:var(--berry); outline:none}
 
@@ -190,6 +194,10 @@
         <button type="button" data-v="m" class="on">תלמיד</button>
         <button type="button" data-v="f">תלמידה</button>
       </div>
+      <div class="len">
+        <label for="subjectSel">המקצוע שלי</label>
+        <select id="subjectSel" class="subj-sel"></select>
+      </div>
       <div class="len" id="lenWrap">
         <span>אורך הנימה</span>
         <div class="toggle" id="lenSeg" role="group" aria-label="אורך">
@@ -210,6 +218,10 @@
     <details class="group" open data-sec="process" data-hl="orange"><summary><h2>התהליך במחצית</h2><span class="note">אחד</span><span class="count"></span><span class="caret">▾</span></summary><div class="marks" id="process"></div></details>
     <details class="group" data-sec="subjects" data-hl="blue"><summary><h2>תחומים בולטים</h2><span class="count"></span><span class="caret">▾</span></summary><div class="marks" id="subjects"></div></details>
     <details class="group" data-sec="activities" data-hl="blue"><summary><h2>מעורבות</h2><span class="count"></span><span class="caret">▾</span></summary><div class="marks" id="activities"></div></details>
+    <details class="group" open data-sec="subj" data-hl="blue" id="subjGroup"><summary><h2 id="subjTitle">במקצוע</h2><span class="note">חוזקות ונקודות לשיפור במקצוע</span><span class="count"></span><span class="caret">▾</span></summary>
+      <p class="sublabel">חוזקות</p><div class="marks" id="subjS"></div>
+      <p class="sublabel">לשיפור</p><div class="marks subj-neg" id="subjI"></div>
+    </details>
     <details class="group" open data-sec="challenges" data-hl="pink"><summary><h2>מה צריך לשפר</h2><span class="count"></span><span class="caret">▾</span></summary><div class="marks" id="challenges"></div></details>
     <details class="group" data-sec="emotional" data-hl="lilac"><summary><h2>רגשי וחברתי</h2><span class="note">ניסוח עדין ותומך</span><span class="count"></span><span class="caret">▾</span></summary><div class="marks" id="emotional"></div></details>
     <details class="group" data-sec="attendance" data-hl="orange"><summary><h2>נוכחות</h2><span class="count"></span><span class="caret">▾</span></summary><div class="marks" id="attendance"></div></details>
@@ -282,7 +294,6 @@
             <option value="באהבה ובהערכה,">באהבה ובהערכה</option>
             <option value="">בלי משפט סיום</option>
           </select></div>
-        <div><label for="subject">מקצוע ליום הורים</label><input type="text" id="subject" placeholder="למשל: מתמטיקה"></div>
         <div><label for="limit">מגבלת תווים (0 בלי מגבלה)</label><input type="number" id="limit" min="0" step="50" value="0"></div>
       </div>
     </details>
@@ -934,10 +945,106 @@ const WISHES_NORMAL = ['', '', ...WISHES];
 // משפטי סיום לפני החתימה (אפשרות "מגוון")
 const CLOSINGS = ['בהצלחה במחצית הבאה,', 'בהערכה רבה,', 'באהבה ובהערכה,', 'בברכה,', 'מאחל לך הצלחה רבה,', 'שלך,', 'בהצלחה ובאהבה,'];
 
+// ================= הערות לפי מקצוע =================
+// s = חוזקות במקצוע, i = לשיפור במקצוע (phrase = לרשימה "להקפיד יותר על ___")
+const SUBJECTS = [
+ { id:'math', name:'מתמטיקה', s:[
+   ['calc','שליטה בחישובים',['{אתה שולט|את שולטת} היטב בחישובים ו{מגיע|מגיעה} לתוצאות מדויקות.','{אתה מחשב|את מחשבת} במהירות ובדיוק, וזה בסיס חזק להמשך.']],
+   ['problems','פתרון בעיות',['{אתה מתמודד|את מתמודדת} יפה עם בעיות מילוליות, ויודע{|ת} לתרגם אותן לתרגיל.']],
+   ['explain','הסבר דרך הפתרון',['{אתה יודע|את יודעת} להסביר את דרך הפתרון שלך בצורה ברורה ומסודרת.']],
+   ['mthink','חשיבה מתמטית',['יש לך חשיבה מתמטית חדה, ו{אתה מוצא|את מוצאת} לא פעם דרכים מקוריות לפתרון.']],
+   ['geo','גאומטריה',['{אתה מגלה|את מגלה} הבנה יפה בגאומטריה, ויודע{|ת} לנמק את הטענות שלך.']] ],
+  i:[
+   ['steps','כתיבת דרך הפתרון','כתיבת דרך הפתרון',['{הקפד|הקפידי} לכתוב את דרך הפתרון ולא רק את התשובה. כך קל יותר למצוא טעויות ולקבל ניקוד מלא.']],
+   ['careless','טעויות חישוב','בדיקת החישובים',['לעיתים טעויות חישוב קטנות פוגעות בתוצאה. כדאי לבדוק כל תרגיל לפני שממשיכים.']],
+   ['basics','חיזוק הבסיס','חיזוק נושאי הבסיס',['יש כמה נושאי בסיס שכדאי לחזק, ותרגול קבוע יעזור לך מאוד.']],
+   ['mpractice','תרגול בבית','תרגול קבוע בבית',['מתמטיקה נלמדת בתרגול. רבע שעה של תרגול בבית כמה פעמים בשבוע תעשה הבדל גדול.']] ] },
+ { id:'english', name:'אנגלית', s:[
+   ['vocab','אוצר מילים',['יש לך אוצר מילים עשיר באנגלית, ו{אתה משתמש|את משתמשת} בו בביטחון.']],
+   ['ereading','הבנת הנקרא',['{אתה מבין|את מבינה} טקסטים באנגלית היטב, ו{עונה|עונה} על שאלות בצורה מדויקת.']],
+   ['speaking','דיבור',['{אתה מדבר|את מדברת} אנגלית בביטחון, ולא {חושש|חוששת} להשתתף בשיחה.']],
+   ['ewriting','כתיבה',['הכתיבה שלך באנגלית ברורה ומסודרת, ו{אתה מקפיד|את מקפידה} על דקדוק.']] ],
+  i:[
+   ['evocab','לימוד מילים','לימוד מילים חדשות',['כדאי ללמוד מילים חדשות באופן קבוע. אוצר מילים רחב יותר יקל {עליך|עלייך} בכל משימה.']],
+   ['egrammar','דקדוק','דיוק בדקדוק',['{הקפד|הקפידי} יותר על דקדוק בכתיבה, כמו זמנים וסדר מילים.']],
+   ['espeak','ביטחון בדיבור','השתתפות בדיבור',['אל {תחשוש|תחששי} לדבר באנגלית בשיעור. טעויות הן חלק מהלמידה.']],
+   ['eread','קריאה מחוץ לשיעור','קריאה באנגלית מחוץ לשיעור',['קריאה קצרה באנגלית מחוץ לשיעור, אפילו שיר או כתבה, תשפר מאוד את ההבנה.']] ] },
+ { id:'pe', name:'חינוך גופני', s:[
+   ['peffort','מאמץ',['{אתה משקיע|את משקיעה} מאמץ רב בשיעורים, ו{נותן|נותנת} את המקסימום.']],
+   ['sport','רוח ספורטיבית',['{אתה משחק|את משחקת} בהגינות וברוח ספורטיבית, ויודע{|ת} גם להפסיד בכבוד.']],
+   ['pskill','יכולת גופנית',['יש לך יכולת גופנית מרשימה, ו{אתה מתקדם|את מתקדמת} יפה בכל תחום.']],
+   ['plead','מנהיגות במגרש',['במגרש {אתה מוביל ומעודד|את מובילה ומעודדת} את חברי הקבוצה.']] ],
+  i:[
+   ['outfit','תלבושת','הגעה עם תלבושת ספורט',['{הקפד|הקפידי} להגיע לכל שיעור עם תלבושת מתאימה, כדי שתוכל{|י} להשתתף באופן מלא.']],
+   ['pactive','השתתפות','השתתפות פעילה בשיעור',['אשמח לראות אותך {משתתף|משתתפת} באופן פעיל יותר בשיעורים.']],
+   ['fair','משחק הוגן','משחק הוגן ומכבד',['חשוב לשמור על משחק הוגן ומכבד גם ברגעים של תחרות.']] ] },
+ { id:'cs', name:'מדעי המחשב', s:[
+   ['algo','חשיבה אלגוריתמית',['יש לך חשיבה אלגוריתמית טובה, ו{אתה יודע|את יודעת} לפרק בעיה לשלבים.']],
+   ['code','כתיבת קוד',['{אתה כותב|את כותבת} קוד מסודר וברור, ו{מגיע|מגיעה} לפתרונות שעובדים.']],
+   ['debug','מציאת שגיאות',['{אתה מתמיד|את מתמידה} במציאת שגיאות, ולא {מוותר|מוותרת} עד שהתוכנית עובדת.']],
+   ['projects','פרויקטים',['הפרויקטים שלך מקוריים, ומראים יצירתיות והשקעה.']] ],
+  i:[
+   ['cplan','תכנון לפני כתיבה','תכנון לפני כתיבת קוד',['כדאי לתכנן את הפתרון לפני שמתחילים לכתוב קוד. זה יחסוך לך הרבה שגיאות.']],
+   ['cpersist','התמדה מול שגיאות','התמדה כשהקוד לא עובד',['כשהקוד לא עובד, אל {תוותר|תוותרי}. מציאת שגיאות היא חלק מהעבודה של כל מתכנת.']],
+   ['cpractice','תרגול','תרגול נוסף בכתיבת קוד',['תרגול נוסף בכתיבת קוד יחזק מאוד את הביטחון שלך.']] ] },
+ { id:'history', name:'היסטוריה', s:[
+   ['hprocess','הבנת תהליכים',['{אתה מבין|את מבינה} תהליכים היסטוריים, ויודע{|ת} לקשר בין סיבה לתוצאה.']],
+   ['hknow','ידע',['יש לך ידע רחב, ו{אתה זוכר|את זוכרת} פרטים ואירועים בצורה מרשימה.']],
+   ['hdiscuss','השתתפות בדיונים',['{אתה משתתף בדיונים ומביע|את משתתפת בדיונים ומביעה} עמדה מנומקת.']],
+   ['hsources','ניתוח מקורות',['{אתה יודע|את יודעת} לקרוא מקור היסטורי ולהסיק ממנו מסקנות.']] ],
+  i:[
+   ['hstudy','למידה למבחנים','למידה מסודרת לקראת מבחנים',['כדאי ללמוד למבחנים בצורה מסודרת, עם סיכומים וציר זמן.']],
+   ['hanswers','תשובות מלאות','תשובות מלאות ומנומקות',['{הקפד|הקפידי} לענות בתשובות מלאות ומנומקות, ולא רק בכמה מילים.']] ] },
+ { id:'civics', name:'אזרחות', s:[
+   ['cterms','מושגים',['{אתה שולט|את שולטת} היטב במושגי היסוד, ויודע{|ת} להסביר אותם בדוגמאות.']],
+   ['cstance','עמדה מנומקת',['{אתה יודע|את יודעת} להציג עמדה מנומקת ולהקשיב לעמדות אחרות בכבוד.']],
+   ['cnews','עניין באקטואליה',['{אתה מתעניין במה שקורה סביבך ומקשר|את מתעניינת במה שקורה סביבך ומקשרת} את החומר לאקטואליה.']] ],
+  i:[
+   ['cterms_i','למידת מושגים','למידת המושגים המרכזיים',['כדאי לחזור על המושגים המרכזיים ולוודא שאפשר להסביר כל אחד מהם בדוגמה.']],
+   ['capply','יישום בתשובות','יישום המושגים בתשובות',['{נסה|נסי} לקשר בתשובות בין המושג לבין הדוגמה שבשאלה.']] ] },
+ { id:'literature', name:'ספרות', s:[
+   ['lanalysis','ניתוח יצירות',['{אתה מנתח|את מנתחת} יצירות בעומק, ו{מגלה|מגלה} רגישות לשפה ולמשמעות.']],
+   ['lideas','פרשנות מקורית',['הפרשנויות שלך מקוריות ומעוררות מחשבה.']],
+   ['lread','אהבת קריאה',['ניכר {שאתה אוהב|שאת אוהבת} לקרוא, וזה מעשיר את הדיונים בשיעור.']],
+   ['lwrite','כתיבה',['הכתיבה שלך עשירה ומבוססת, עם דוגמאות מהיצירה.']] ],
+  i:[
+   ['lquote','ביסוס בציטוטים','ביסוס התשובות בציטוטים',['{הקפד|הקפידי} לבסס את התשובות על ציטוטים ודוגמאות מהיצירה.']],
+   ['lreadall','קריאת היצירות','קריאת היצירות במלואן',['כדאי לקרוא את היצירות במלואן לפני השיעור, כך תוכל{|י} להשתתף בדיון.']] ] },
+ { id:'earth', name:'מדעי כדור הארץ', s:[
+   ['eprocess','הבנת תהליכים',['{אתה מבין|את מבינה} את התהליכים בכדור הארץ, ויודע{|ת} להסביר אותם בבהירות.']],
+   ['ecurious','סקרנות',['הסקרנות שלך לגבי העולם שסביבנו בולטת, והשאלות שלך מעשירות את השיעור.']],
+   ['emaps','מפות ונתונים',['{אתה יודע|את יודעת} לקרוא מפות, גרפים ונתונים ולהסיק מהם מסקנות.']] ],
+  i:[
+   ['eterms','מושגים','למידת המושגים המרכזיים',['כדאי לחזור על המושגים המרכזיים ולהכין לעצמך סיכום קצר לכל נושא.']],
+   ['eexplain','הסבר במילים שלך','הסבר התהליכים במילים שלך',['{נסה|נסי} להסביר את התהליכים במילים שלך. כך תדע{|י} שהבנת באמת.']] ] },
+ { id:'science', name:'מדעים', s:[
+   ['experiments','ניסויים',['{אתה עובד בקפידה בניסויים, מתעד ומסיק|את עובדת בקפידה בניסויים, מתעדת ומסיקה} מסקנות בצורה מדויקת.']],
+   ['sthink','חשיבה מדעית',['יש לך חשיבה מדעית: {אתה שואל, משער ובודק|את שואלת, משערת ובודקת}.']],
+   ['scurious','סקרנות מדעית',['הסקרנות המדעית שלך בולטת, ו{אתה מרבה|את מרבה} לשאול שאלות טובות.']],
+   ['sreports','דוחות מעבדה',['דוחות המעבדה שלך מסודרים, מלאים ומנומקים.']] ],
+  i:[
+   ['slab','עבודה במעבדה','עבודה זהירה ומסודרת במעבדה',['במעבדה חשוב לעבוד לפי ההוראות, בזהירות ובסדר.']],
+   ['sreports_i','כתיבת דוחות','כתיבת דוחות מלאים',['{הקפד|הקפידי} לכתוב דוחות מלאים, עם תצפיות, תוצאות ומסקנה.']],
+   ['sterms','מושגים','למידת המושגים המדעיים',['כדאי לחזור על המושגים המדעיים באופן קבוע, הם הבסיס לכל נושא.']] ] },
+ { id:'hebrew', name:'לשון', label:'לשון ועברית', s:[
+   ['hwrite','הבעה בכתב',['{אתה מתבטא|את מתבטאת} בכתב בצורה עשירה, ברורה ומסודרת.']],
+   ['hgrammar','דקדוק',['{אתה שולט|את שולטת} יפה בכללי הדקדוק והתחביר.']],
+   ['hread','הבנת הנקרא',['{אתה מבין טקסטים לעומק ועונה|את מבינה טקסטים לעומק ועונה} על שאלות בדיוק.']],
+   ['hlang','שפה עשירה',['השפה שלך עשירה, ו{אתה משתמש|את משתמשת} במילים מדויקות.']] ],
+  i:[
+   ['spelling','כתיב','כתיב נכון',['כדאי להקפיד יותר על כתיב נכון. קריאה חוזרת של מה שכתבת תעזור מאוד.']],
+   ['hstructure','מבנה הכתיבה','כתיבה מאורגנת עם פתיחה, גוף וסיכום',['{נסה|נסי} לארגן את הכתיבה בפתיחה, גוף וסיכום. כך הרעיונות שלך יעברו בצורה ברורה.']],
+   ['hreading','קריאה','קריאה קבועה',['קריאה קבועה, אפילו כמה עמודים ביום, תשפר מאוד את ההבנה ואת הכתיבה.']] ] }
+];
+SUBJECTS.forEach(sub => {
+  sub.sItems = sub.s.map(([id,label,arr]) => ({ id: sub.id+':'+id, label, arr }));
+  sub.iItems = sub.i.map(([id,label,phrase,arr]) => ({ id: sub.id+':'+id, label, phrase, arr }));
+});
+
 
 // ===================== לוגיקה =====================
-const EMPTY = () => ({ traits:[], achievement:'none', process:'none', subjects:[], activities:[], challenges:[], emotional:[], attendance:'skip', goals:[] });
-const state = Object.assign({ gender:'m', mode:'long', len:'normal' }, EMPTY());
+const EMPTY = () => ({ subjS:[], subjI:[], traits:[], achievement:'none', process:'none', subjects:[], activities:[], challenges:[], emotional:[], attendance:'skip', goals:[] });
+const state = Object.assign({ gender:'m', mode:'long', len:'normal', subject:'general' }, EMPTY());
 const $ = id => document.getElementById(id);
 const isM = () => state.gender === 'm';
 const g = s => resolve(s, isM());
@@ -947,8 +1054,8 @@ const store = {
   get(k,d){ try{ const v = localStorage.getItem(k); return v===null ? d : JSON.parse(v); }catch(e){ return d; } },
   set(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
 };
-const MULTI = ['traits','subjects','activities','challenges','emotional','goals'];
-const KEYS = ['traits','achievement','process','subjects','activities','challenges','emotional','attendance','goals'];
+const MULTI = ['subjS','subjI','traits','subjects','activities','challenges','emotional','goals'];
+const KEYS = ['subjS','subjI','traits','achievement','process','subjects','activities','challenges','emotional','attendance','goals'];
 const OFF = { achievement:'none', process:'none', attendance:'skip' };
 const isOn = k => MULTI.includes(k) ? state[k].length > 0 : state[k] !== OFF[k];
 
@@ -977,6 +1084,7 @@ function syncKey(key){
     const on = multi ? state[key].includes(c.dataset.id) : state[key] === c.dataset.id;
     c.classList.toggle('on', on); c.setAttribute('aria-pressed', on);
   });
+  if (key === 'subjS' || key === 'subjI'){ const n = state.subjS.length + state.subjI.length; document.querySelector('[data-sec="subj"] .count').textContent = n ? n : ''; return; }
   const cnt = document.querySelector(`[data-sec="${key}"] .count`);
   if (cnt){ const n = multi ? state[key].length : (isOn(key) ? 1 : 0); cnt.textContent = n ? n : ''; }
 }
@@ -994,6 +1102,8 @@ function updateModeUI(){
   $('sheetKind').textContent = long ? 'לתעודה' : 'ליום הורים, קצר';
 }
 
+const curSub = () => SUBJECTS.find(s => s.id === state.subject);
+const subItem = (list, id) => { const s = curSub(); return s ? s[list].find(x => x.id === id) : null; };
 const nameVal = () => $('name').value.trim();
 const custom = () => { const c = $('custom').value.trim(); return c ? (/[.!?]$/.test(c) ? c : c + '.') : ''; };
 const listSentence = (key, tpls, items) => g(pick(key, tpls)).replace('{list}', joinHe(items.map(i => i.b)));
@@ -1014,6 +1124,9 @@ function buildLong(){
   const acts = state.activities.map(id => byId(activitiesData,id));
   if (acts.length && L !== 'compact') strong.push(listSentence('act', ACT_LONG, acts));
   if (strong.length) lines.push(strong.join(' '));
+  const sub = curSub();
+  const subS = sub ? cap(state.subjS, 2).map(id => subItem('sItems', id)).filter(Boolean).map(it => g(pick('ss:'+it.id, it.arr))) : [];
+  if (subS.length){ subS[0] = `בשיעורי ${sub.name}, ` + subS[0]; lines.push(subS.join(' ')); }
 
   const prog = [];
   const ach = byId(achievementData, state.achievement);
@@ -1023,7 +1136,9 @@ function buildLong(){
   if (att && att.short) prog.push(g(att.long));
   if (prog.length) lines.push(prog.join(' '));
 
-  const neg = cap(state.challenges, 1).map(id => g(pick('c:'+id, byId(challengesData,id).long)));
+  const subI = sub ? cap(state.subjI, 1).map(id => subItem('iItems', id)).filter(Boolean).map(it => g(pick('si:'+it.id, it.arr))) : [];
+  if (subI.length && !subS.length) subI[0] = `בשיעורי ${sub.name}, ` + subI[0];
+  const neg = [...subI, ...cap(state.challenges, 1).map(id => g(pick('c:'+id, byId(challengesData,id).long)))];
   if (att && att.phrases) neg.push(g(att.long));
   if (neg.length){
     if (strong.length || prog.length){
@@ -1069,6 +1184,8 @@ function buildShort(){
       'כיף לי ללמד {תלמיד|תלמידה} {list} כמוך.'
     ])).replace('{list}', joinHe(adjs)));
   }
+  const sub = curSub();
+  if (sub) state.subjS.slice(0,2).map(id => subItem('sItems', id)).filter(Boolean).forEach(it => out.push(g(pick('ss:'+it.id, it.arr))));
   const subj = state.subjects.map(id => byId(subjectsData,id));
   if (subj.length) out.push(listSentence('ssubj', SUBJECT_LONG, subj));
   const ach = byId(achievementData, state.achievement);
@@ -1079,7 +1196,7 @@ function buildShort(){
   const att = byId(attendanceData, state.attendance);
   if (att && att.short) out.push(g(att.long));
 
-  const phrases = state.challenges.map(id => byId(challengesData,id).phrase);
+  const phrases = [...(sub ? state.subjI.map(id => subItem('iItems', id)).filter(Boolean).map(it => it.phrase) : []), ...state.challenges.map(id => byId(challengesData,id).phrase)];
   if (att && att.phrases) phrases.push(...att.phrases);
   if (phrases.length){
     const pre = out.length ? pick('spre', ['יחד עם זאת, ', 'לצד זאת, ', 'עם זאת, ']) : '';
@@ -1096,8 +1213,7 @@ function buildShort(){
   const gl = state.goals.slice(0,1).map(id => { const d = byId(goalsData,id); return pick('g:'+id, m ? d.m : d.f); });
   out.push(gl.length ? gl[0] : g(pick('sbelieve', ['אני מאמין בך.', 'אני גאה בך ומאמין בך.', 'אני בטוח שעוד נכונו לך הצלחות רבות.', '{המשך|המשיכי} כך, אני מאמין בך.', 'מחכה לראות אותך {ממשיך|ממשיכה} לצמוח.'])));
 
-  const subject = $('subject').value.trim();
-  const body = (subject ? `בשיעורי ${subject}, ` + out[0].replace(/^(.)/, s => s) : out[0]) + (out.length > 1 ? ' ' + out.slice(1).join(' ') : '');
+  const body = (sub ? `בשיעורי ${sub.name}, ` + out[0] : out[0]) + (out.length > 1 ? ' ' + out.slice(1).join(' ') : '');
   return greet + '\n' + body;
 }
 
@@ -1198,6 +1314,18 @@ function nextStudent(){
 }
 
 // ===== הפעלה =====
+function renderSubject(){
+  const sub = curSub();
+  $('subjGroup').classList.toggle('hidden', !sub);
+  if (sub){ $('subjTitle').textContent = `ב${sub.name}`; makeMarks('subjS', sub.sItems); makeMarks('subjI', sub.iItems); }
+  else { $('subjS').innerHTML = ''; $('subjI').innerHTML = ''; }
+}
+$('subjectSel').innerHTML = '<option value="general">חינוך (כללי)</option>' + SUBJECTS.map(s => `<option value="${s.id}">${s.label || s.name}</option>`).join('');
+state.subject = store.get('nima_subjectSel', 'general');
+if (!SUBJECTS.some(s => s.id === state.subject)) state.subject = 'general';
+$('subjectSel').value = state.subject;
+renderSubject();
+$('subjectSel').addEventListener('change', () => { state.subject = $('subjectSel').value; state.subjS = []; state.subjI = []; store.set('nima_subjectSel', state.subject); renderSubject(); syncKey('subjS'); render(); });
 makeMarks('traits', traitsData);
 makeMarks('achievement', achievementData.filter(a => a.id !== 'none'));
 makeMarks('process', processData.filter(p => p.id !== 'none'));
@@ -1217,7 +1345,7 @@ setSeg('modeSeg','mode', store.get('nima_mode','long'));
 setSeg('lenSeg','len', store.get('nima_len','normal'));
 updateModeUI();
 
-['sign','subject','limit','closing'].forEach(id => {
+['sign','limit','closing'].forEach(id => {
   const v = store.get('nima_'+id, null); if (v !== null) $(id).value = v;
   const h = () => { store.set('nima_'+id, $(id).value); render(); };
   $(id).addEventListener('input', h); $(id).addEventListener('change', h);
